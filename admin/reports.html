@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ffffff" />
+<title>Reports — Admin — The Eternal Dread</title>
+<link rel="icon" href="../assets/images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ffffff;--bg-soft:#f8fafc;--text:#0b1220;--muted:#64748b;--muted-2:#94a3b8;
+  --border:#e5e9f0;--border-strong:#d7dde7;--accent:#0b1220;
+  --success:#16a34a;--danger:#dc2626;--warn:#f59e0b;--info:#0ea5e9;
+  --s1:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --s2:0 10px 30px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.04);
+  --s3:0 20px 50px rgba(16,24,40,.12);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --serif:'Playfair Display',Georgia,serif;
+  --sidebar-w:260px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);color:var(--text);line-height:1.6;
+  background:
+    radial-gradient(900px 700px at 12% -10%, rgba(15,23,42,.04), transparent 60%),
+    var(--bg);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button,input,select{font-family:inherit}
+
+.admin-shell{display:flex;min-height:100vh}
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  position:fixed;top:0;left:0;bottom:0;z-index:60;
+  display:flex;flex-direction:column;
+  transition:transform .3s var(--ease);
+  box-shadow:2px 0 20px rgba(15,23,42,.1);
+}
+.sidebar-head{
+  padding:22px 20px 18px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.sidebar-logo{
+  width:42px;height:42px;border-radius:12px;object-fit:cover;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 8px 20px rgba(0,0,0,.3),0 0 0 3px rgba(255,255,255,.04);
+}
+.sidebar-brand strong{
+  display:block;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;font-weight:800;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sidebar-brand small{
+  display:block;font-size:.54rem;letter-spacing:2.4px;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-top:3px;font-weight:600;
+}
+.sidebar-nav{flex:1;overflow-y:auto;padding:16px 12px}
+.nav-group-label{
+  font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.35);padding:12px 12px 8px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:10px;
+  font-size:.86rem;font-weight:500;color:rgba(255,255,255,.65);
+  transition:all .22s var(--ease);margin-bottom:2px;
+}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.85}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.06)}
+.nav-item.active{
+  color:#fff;background:rgba(255,255,255,.1);font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.nav-item.active svg{opacity:1}
+.sidebar-foot{
+  padding:14px 16px 18px;border-top:1px solid rgba(255,255,255,.06);
+  font-size:.68rem;color:rgba(255,255,255,.4);text-align:center;line-height:1.6;
+}
+.sidebar-foot strong{color:rgba(255,255,255,.7);letter-spacing:1.2px;font-weight:700;display:block;margin-top:3px;}
+
+.main{
+  flex:1;margin-left:var(--sidebar-w);min-width:0;
+  display:flex;flex-direction:column;
+}
+.topbar{
+  position:sticky;top:0;z-index:40;padding:14px 26px;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;
+}
+.hamburger{
+  display:none;width:38px;height:38px;border-radius:10px;
+  background:transparent;border:none;cursor:pointer;color:var(--text);
+  align-items:center;justify-content:center;
+}
+.hamburger:hover{background:rgba(15,23,42,.06)}
+.hamburger svg{width:20px;height:20px}
+.topbar-title{flex:1;min-width:0}
+.topbar-title h1{
+  font-family:var(--serif);font-size:1.15rem;font-weight:700;
+  letter-spacing:-.3px;color:#0b1220;
+}
+.topbar-title p{font-size:.76rem;color:var(--muted);margin-top:1px;}
+.admin-avatar{
+  width:38px;height:38px;border-radius:50%;overflow:hidden;
+  border:2px solid #fff;flex-shrink:0;
+  box-shadow:0 0 0 2px rgba(15,23,42,.08),0 6px 16px rgba(15,23,42,.15);
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  display:grid;place-items:center;font-weight:700;color:var(--muted);font-size:.85rem;
+}
+.admin-avatar img{width:100%;height:100%;object-fit:cover}
+
+.content{padding:26px;flex:1}
+
+/* STAT BAR */
+.stat-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;
+}
+.stat-mini{
+  padding:14px 16px;border-radius:14px;
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);box-shadow:var(--s2);
+  display:flex;align-items:center;gap:12px;
+}
+.stat-mini .icon{
+  width:36px;height:36px;border-radius:10px;
+  display:grid;place-items:center;flex-shrink:0;
+}
+.stat-mini .icon svg{width:17px;height:17px}
+.stat-mini .icon.red{background:rgba(220,38,38,.1);color:#b91c1c}
+.stat-mini .icon.amber{background:rgba(245,158,11,.12);color:#b45309}
+.stat-mini .icon.green{background:rgba(22,163,74,.1);color:#15803d}
+.stat-mini .icon.gray{background:rgba(100,116,139,.1);color:#475569}
+.stat-mini .val{font-size:1.35rem;font-weight:700;color:#0b1220;line-height:1;font-family:var(--serif);}
+.stat-mini .lbl{font-size:.68rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+/* TOOLBAR */
+.toolbar{
+  display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;align-items:center;
+  padding:14px 16px;border-radius:14px;
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);box-shadow:var(--s2);
+}
+.search-wrap{flex:1;min-width:220px;position:relative}
+.search-wrap svg{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;color:var(--muted-2);pointer-events:none;
+}
+.search-input{
+  width:100%;padding:10px 12px 10px 36px;
+  border-radius:10px;border:1px solid var(--border);
+  background:#fff;font-size:.88rem;color:var(--text);
+  box-shadow:var(--s1);transition:border .2s, box-shadow .25s;
+}
+.search-input:focus{
+  outline:none;border-color:#0b1220;
+  box-shadow:0 0 0 3px rgba(15,23,42,.05);
+}
+.filter-select{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--border);
+  background:#fff;font-size:.86rem;color:var(--text);cursor:pointer;
+  box-shadow:var(--s1);
+}
+.filter-select:focus{outline:none;border-color:#0b1220}
+
+.result-count{
+  font-size:.82rem;color:var(--muted);margin-bottom:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.result-count strong{color:#0b1220;font-weight:600;}
+
+/* REPORTS LIST */
+.reports-list{display:flex;flex-direction:column;gap:14px}
+
+.report-card{
+  padding:18px 20px;border-radius:16px;
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);box-shadow:var(--s2);
+  transition:box-shadow .25s var(--ease);
+  animation:cardIn .4s var(--ease) backwards;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.report-card:hover{box-shadow:var(--s3), 0 0 0 1px rgba(15,23,42,.04)}
+.report-card.resolved{opacity:.72}
+
+.report-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.reporter-avatar{
+  width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  border:2px solid #fff;
+  box-shadow:0 4px 12px rgba(15,23,42,.10);
+  display:grid;place-items:center;font-weight:700;font-size:.82rem;color:var(--muted);
+}
+.reporter-avatar img{width:100%;height:100%;object-fit:cover}
+.report-meta{flex:1;min-width:0}
+.report-meta .line1{font-size:.86rem;color:#334155;line-height:1.4}
+.report-meta .line1 strong{color:#0b1220;font-weight:600}
+.report-meta .line2{
+  font-size:.72rem;color:var(--muted-2);margin-top:2px;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.report-meta .line2 svg{width:11px;height:11px}
+
+.type-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:999px;
+  font-size:.64rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  flex-shrink:0;
+}
+.type-badge.post{background:rgba(14,165,233,.1);color:#0284c7}
+.type-badge.comment{background:rgba(245,158,11,.1);color:#b45309}
+.type-badge.user{background:rgba(124,58,237,.1);color:#6d28d9}
+.type-badge.other{background:rgba(100,116,139,.1);color:#475569}
+
+.status-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:999px;
+  font-size:.64rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  flex-shrink:0;
+}
+.status-badge.open{background:rgba(220,38,38,.1);color:#b91c1c}
+.status-badge.resolved{background:rgba(22,163,74,.1);color:#15803d}
+.status-badge.dismissed{background:rgba(100,116,139,.1);color:#475569}
+
+.report-reason{
+  padding:12px 14px;border-radius:11px;
+  background:rgba(220,38,38,.04);
+  border-left:3px solid #dc2626;
+  font-size:.86rem;color:#334155;line-height:1.55;
+  margin-bottom:12px;
+  white-space:pre-wrap;word-wrap:break-word;
+}
+.report-reason .label{
+  font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:#b91c1c;margin-bottom:4px;display:block;
+}
+
+.target-preview{
+  padding:11px 13px;border-radius:10px;
+  background:rgba(15,23,42,.03);
+  border:1px solid var(--border);
+  font-size:.82rem;color:var(--muted);line-height:1.5;
+  margin-bottom:12px;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.target-preview svg{width:14px;height:14px;color:var(--muted-2);flex-shrink:0;margin-top:2px}
+.target-preview .t-text{
+  flex:1;min-width:0;overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  word-break:break-word;
+}
+
+.report-actions{
+  display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;
+  border-top:1px dashed var(--border);
+}
+.action-btn{
+  padding:8px 14px;border-radius:9px;
+  background:#fff;border:1px solid var(--border);
+  font-size:.76rem;font-weight:600;color:#0b1220;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;
+  transition:all .2s var(--ease);white-space:nowrap;
+}
+.action-btn:hover{transform:translateY(-1px);box-shadow:var(--s1)}
+.action-btn svg{width:12px;height:12px}
+.action-btn.primary{
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;border-color:transparent;
+  box-shadow:0 8px 18px rgba(15,23,42,.22);
+}
+.action-btn.danger{color:#dc2626;border-color:rgba(220,38,38,.25)}
+.action-btn.danger:hover{background:#fef2f2}
+.action-btn.success{color:#15803d;border-color:rgba(22,163,74,.3)}
+.action-btn.success:hover{background:#f0fdf4}
+.action-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+.empty{
+  text-align:center;padding:50px 20px;color:var(--muted);
+  font-size:.88rem;line-height:1.6;
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);border-radius:16px;
+  box-shadow:var(--s2);
+}
+.empty svg{width:42px;height:42px;color:var(--muted-2);margin:0 auto 12px;opacity:.6;}
+.empty h3{font-family:var(--serif);font-size:1.1rem;color:#0b1220;margin-bottom:6px;}
+
+.skeleton{
+  background:linear-gradient(90deg,#f1f5f9 0%,#e2e8f0 50%,#f1f5f9 100%);
+  background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-card{height:180px;border-radius:16px;background:#fff;border:1px solid var(--border);box-shadow:var(--s2);padding:18px;}
+
+.pagination{
+  display:flex;justify-content:center;align-items:center;gap:8px;
+  margin-top:22px;
+}
+.page-btn{
+  padding:8px 14px;border-radius:9px;
+  background:#fff;border:1px solid var(--border);
+  font-size:.82rem;font-weight:600;color:var(--text);cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.page-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:var(--s1)}
+.page-btn:disabled{opacity:.4;cursor:not-allowed}
+.page-info{font-size:.82rem;color:var(--muted);padding:0 8px;}
+
+/* Toast */
+.toast-wrap{
+  position:fixed;top:20px;right:20px;z-index:200;
+  display:flex;flex-direction:column;gap:10px;pointer-events:none;
+}
+.toast{
+  min-width:250px;max-width:340px;padding:12px 16px;border-radius:12px;
+  background:#0b1220;color:#fff;font-size:.84rem;
+  box-shadow:0 14px 30px rgba(15,23,42,.35);
+  display:flex;align-items:center;gap:10px;pointer-events:auto;
+  animation:toastIn .3s var(--ease);
+}
+.toast.success{background:#065f46}
+.toast.error{background:#991b1b}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+.overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:55;
+  display:none;backdrop-filter:blur(3px);
+}
+.overlay.show{display:block;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+@media (max-width:900px){
+  .stat-bar{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:760px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .topbar{padding:12px 16px}
+  .topbar-title h1{font-size:1rem}
+  .content{padding:16px}
+  .toolbar{padding:12px}
+  .report-card{padding:14px}
+  .stat-mini{padding:12px}
+  .stat-mini .val{font-size:1.1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="admin-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <img src="../assets/images/logo.png" alt="Logo" class="sidebar-logo" />
+      <div class="sidebar-brand">
+        <strong>Eternal Dread</strong>
+        <small>Admin Panel</small>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+      <div class="nav-group-label">Manage</div>
+      <a href="members.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        Members
+      </a>
+      <a href="posts.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Posts
+      </a>
+      <a href="comments.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Comments
+      </a>
+      <a href="events.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Events
+      </a>
+      <a href="reports.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Reports
+      </a>
+      <div class="nav-group-label">System</div>
+      <a href="settings.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sidebar-foot">
+      © The Eternal Dread
+      <strong>THx@T-SEEK@REX</strong>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <div class="topbar-title">
+        <h1>Reports</h1>
+        <p>Review user-submitted reports</p>
+      </div>
+      <div class="admin-avatar" id="adminAvatar">
+        <span id="adminInitial">A</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- STAT BAR -->
+      <div class="stat-bar">
+        <div class="stat-mini">
+          <div class="icon red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          </div>
+          <div>
+            <div class="val" id="statOpen">—</div>
+            <div class="lbl">Open</div>
+          </div>
+        </div>
+        <div class="stat-mini">
+          <div class="icon amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div class="val" id="statPending">—</div>
+            <div class="lbl">In Review</div>
+          </div>
+        </div>
+        <div class="stat-mini">
+          <div class="icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div>
+            <div class="val" id="statResolved">—</div>
+            <div class="lbl">Resolved</div>
+          </div>
+        </div>
+        <div class="stat-mini">
+          <div class="icon gray">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          <div>
+            <div class="val" id="statDismissed">—</div>
+            <div class="lbl">Dismissed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input id="searchInput" type="text" class="search-input" placeholder="Search by reason, reporter, or target…" autocomplete="off" />
+        </div>
+        <select class="filter-select" id="statusFilter">
+          <option value="all">All Status</option>
+          <option value="open">Open</option>
+          <option value="pending">In Review</option>
+          <option value="resolved">Resolved</option>
+          <option value="dismissed">Dismissed</option>
+        </select>
+        <select class="filter-select" id="typeFilter">
+          <option value="all">All Types</option>
+          <option value="post">Posts</option>
+          <option value="comment">Comments</option>
+          <option value="user">Users</option>
+        </select>
+      </div>
+
+      <!-- RESULT COUNT -->
+      <div class="result-count" id="resultCount" style="display:none">
+        Showing <strong id="countNum">0</strong> reports
+      </div>
+
+      <!-- REPORTS LIST -->
+      <div class="reports-list" id="reportsList">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="pagination" id="pagination" style="display:none">
+        <button class="page-btn" id="prevBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M15 18l-6-6 6-6"/></svg>
+          Prev
+        </button>
+        <span class="page-info" id="pageInfo">Page 1</span>
+        <button class="page-btn" id="nextBtn">
+          Next
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:4px"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script type="module">
+  import { requireAdminAuth } from '../js/auth.js';
+  import {
+    getAllReportsAdmin, updateReportStatus, deletePost, deleteComment,
+    getAllPostsAdmin, getAllCommentsAdmin, getAllMembers
+  } from '../js/app.js';
+  import { showToast, initAdminUI } from '../js/admin.js';
+
+  initAdminUI();
+
+  let currentAdmin = null;
+  let allReports = [];
+  let filteredReports = [];
+  let postsMap = {};
+  let commentsMap = {};
+  let membersMap = {};
+  let currentSearch = '';
+  let currentStatus = 'all';
+  let currentType = 'all';
+  let currentPage = 1;
+  const PAGE_SIZE = 10;
+  let actionInFlight = null;
+
+  // ============ ADMIN GUARD ============
+  requireAdminAuth(async (adminUser, adminDoc) => {
+    currentAdmin = adminUser;
+    renderAdminAvatar(adminDoc);
+    await loadData();
+    bindEvents();
+  });
+
+  // ============ HELPERS ============
+  function esc(s){
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function timeAgo(ts){
+    if (!ts) return 'just now';
+    const date = ts.toDate ? ts.toDate() : new Date(ts);
+    const diff = (Date.now() - date.getTime()) / 1000;
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    if (diff < 604800) return Math.floor(diff/86400) + 'd ago';
+    return date.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+  }
+  function normalizeStatus(r){
+    const s = (r.status || 'open').toLowerCase();
+    if (s === 'open' || s === 'pending' || s === 'resolved' || s === 'dismissed') return s;
+    if (s === 'review' || s === 'in-review' || s === 'in_review') return 'pending';
+    return 'open';
+  }
+  function normalizeType(r){
+    const t = (r.targetType || r.type || 'post').toLowerCase();
+    if (t === 'post' || t === 'comment' || t === 'user') return t;
+    return 'post';
+  }
+  function targetId(r){
+    return r.targetId || r.postId || r.commentId || r.reportedUserId || null;
+  }
+
+  function renderAdminAvatar(doc){
+    const name = (doc && doc.name) || 'Admin';
+    const photo = (doc && doc.profileImageBase64) || '';
+    const wrap = document.getElementById('adminAvatar');
+    if (photo){
+      wrap.innerHTML = `<img src="${photo}" alt="">`;
+    } else {
+      wrap.innerHTML = `<span>${esc(name.charAt(0).toUpperCase())}</span>`;
+    }
+  }
+
+  // ============ LOAD DATA ============
+  async function loadData(){
+    try {
+      const [reports, posts, comments, members] = await Promise.all([
+        getAllReportsAdmin().catch(()=>[]),
+        getAllPostsAdmin().catch(()=>[]),
+        getAllCommentsAdmin().catch(()=>[]),
+        getAllMembers({ excludeUid: null }).catch(()=>[])
+      ]);
+      allReports = reports || [];
+
+      postsMap = {};
+      (posts || []).forEach(p => { postsMap[p.id] = p; });
+
+      commentsMap = {};
+      (comments || []).forEach(c => { commentsMap[c.id] = c; });
+
+      membersMap = {};
+      (members || []).forEach(m => { membersMap[m.id] = m; });
+
+      updateStats();
+      applyFilters();
+    } catch (e){
+      console.error(e);
+      showToast('Could not load reports.', 'error');
+      document.getElementById('reportsList').innerHTML = `
+        <div class="empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          <h3>Could not load reports</h3>
+          <p>Please refresh the page.</p>
+        </div>`;
+    }
+  }
+
+  // ============ STATS ============
+  function updateStats(){
+    const counts = { open: 0, pending: 0, resolved: 0, dismissed: 0 };
+    allReports.forEach(r => {
+      const s = normalizeStatus(r);
+      if (counts[s] !== undefined) counts[s]++;
+    });
+    animateNumber('statOpen', counts.open);
+    animateNumber('statPending', counts.pending);
+    animateNumber('statResolved', counts.resolved);
+    animateNumber('statDismissed', counts.dismissed);
+  }
+  function animateNumber(id, target){
+    const el = document.getElementById(id);
+    if (!el) return;
+    const t0 = performance.now();
+    const dur = 600;
+    function tick(now){
+      const p = Math.min((now - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ============ FILTERING ============
+  function applyFilters(){
+    const q = currentSearch.trim().toLowerCase();
+
+    filteredReports = allReports.filter(r => {
+      const status = normalizeStatus(r);
+      const type = normalizeType(r);
+
+      if (currentStatus !== 'all' && status !== currentStatus) return false;
+      if (currentType !== 'all' && type !== currentType) return false;
+
+      if (!q) return true;
+      const reason = (r.reason || '').toLowerCase();
+      const reporter = membersMap[r.reporterId];
+      const reporterName = (reporter && reporter.name || '').toLowerCase();
+      const target = getTargetContext(r);
+      const targetText = (target && target.text || '').toLowerCase();
+      return reason.includes(q) || reporterName.includes(q) || targetText.includes(q);
+    });
+
+    // Sort: open first, then pending, then by createdAt desc
+    const order = { open: 0, pending: 1, resolved: 2, dismissed: 3 };
+    filteredReports.sort((a, b) => {
+      const oa = order[normalizeStatus(a)] ?? 9;
+      const ob = order[normalizeStatus(b)] ?? 9;
+      if (oa !== ob) return oa - ob;
+      const ta = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
+      const tb = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
+      return tb - ta;
+    });
+
+    currentPage = 1;
+    renderReports();
+  }
+
+  // ============ TARGET CONTEXT ============
+  function getTargetContext(r){
+    const type = normalizeType(r);
+    const id = targetId(r);
+    if (!id) return null;
+
+    if (type === 'post'){
+      const p = postsMap[id];
+      if (!p) return { text: 'Post no longer exists', authorName: null, deleted: true, id, type };
+      return {
+        id, type,
+        text: p.text || (p.imageBase64 ? '[image post]' : ''),
+        authorName: (p.author && p.author.name) || 'Member',
+        authorId: p.userId,
+        deleted: false
+      };
+    }
+    if (type === 'comment'){
+      const c = commentsMap[id];
+      if (!c) return { text: 'Comment no longer exists', authorName: null, deleted: true, id, type };
+      return {
+        id, type,
+        text: c.text || '',
+        authorName: (c.author && c.author.name) || 'Member',
+        authorId: c.userId,
+        deleted: false
+      };
+    }
+    if (type === 'user'){
+      const m = membersMap[id];
+      if (!m) return { text: 'User no longer exists', authorName: null, deleted: true, id, type };
+      return {
+        id, type,
+        text: m.name || 'Member',
+        authorName: m.nickname ? '@' + m.nickname : null,
+        authorId: id,
+        deleted: false
+      };
+    }
+    return null;
+  }
+
+  // ============ RENDER ============
+  function renderReports(){
+    const list = document.getElementById('reportsList');
+    const countWrap = document.getElementById('resultCount');
+    const pagination = document.getElementById('pagination');
+
+    if (!filteredReports || filteredReports.length === 0){
+      list.innerHTML = `
+        <div class="empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          <h3>No reports found</h3>
+          <p>All clear — nothing to review.</p>
+        </div>`;
+      countWrap.style.display = 'none';
+      pagination.style.display = 'none';
+      return;
+    }
+
+    countWrap.style.display = 'flex';
+    document.getElementById('countNum').textContent = filteredReports.length;
+
+    const totalPages = Math.ceil(filteredReports.length / PAGE_SIZE);
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    const pageItems = filteredReports.slice(start, end);
+
+    list.innerHTML = pageItems.map((r, i) => renderReportCard(r, i)).join('');
+
+    if (totalPages > 1){
+      pagination.style.display = 'flex';
+      document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById('prevBtn').disabled = currentPage <= 1;
+      document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+    } else {
+      pagination.style.display = 'none';
+    }
+
+    bindReportActions();
+  }
+
+  function renderReportCard(r, idx){
+    const status = normalizeStatus(r);
+    const type = normalizeType(r);
+    const reporter = membersMap[r.reporterId] || {};
+    const reporterName = reporter.name || 'Unknown user';
+    const reporterPhoto = reporter.profileImageBase64 || '';
+    const reporterInitial = reporterName.charAt(0).toUpperCase();
+    const target = getTargetContext(r);
+    const isResolved = status === 'resolved' || status === 'dismissed';
+
+    return `
+      <article class="report-card ${isResolved ? 'resolved' : ''}" data-report-id="${esc(r.id)}" style="animation-delay:${Math.min(idx*0.04, 0.3)}s">
+        <div class="report-head">
+          <div class="reporter-avatar">${reporterPhoto ? `<img src="${reporterPhoto}" alt="">` : esc(reporterInitial)}</div>
+          <div class="report-meta">
+            <div class="line1">Reported by <strong>${esc(reporterName)}</strong></div>
+            <div class="line2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ${esc(timeAgo(r.createdAt))}
+            </div>
+          </div>
+          <span class="type-badge ${type}">${esc(type)}</span>
+          <span class="status-badge ${status}">${esc(statusLabel(status))}</span>
+        </div>
+
+        <div class="report-reason">
+          <span class="label">Reason</span>
+          ${esc(r.reason || 'No reason provided.')}
+        </div>
+
+        ${target ? `
+          <div class="target-preview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <div class="t-text">
+              ${target.deleted
+                ? `<em style="color:#b91c1c">Target has been deleted</em>`
+                : `${target.authorName ? `<strong>${esc(target.authorName)}</strong> — ` : ''}${esc(target.text || '(empty)')}`}
+            </div>
+          </div>` : ''}
+
+        <div class="report-actions">
+          ${!target || target.deleted ? '' : `
+            <button class="action-btn" data-view="${esc(target.type)}" data-target="${esc(target.id)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              View Target
+            </button>
+            ${(status === 'open' || status === 'pending') ? `
+              <button class="action-btn danger" data-delete-target="${esc(target.type)}" data-target="${esc(target.id)}" data-report="${esc(r.id)}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Delete & Resolve
+              </button>` : ''}
+          `}
+          ${status !== 'resolved' ? `
+            <button class="action-btn success" data-resolve="${esc(r.id)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              Mark Resolved
+            </button>` : ''}
+          ${status !== 'dismissed' ? `
+            <button class="action-btn" data-dismiss="${esc(r.id)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              Dismiss
+            </button>` : ''}
+          ${status !== 'open' ? `
+            <button class="action-btn" data-reopen="${esc(r.id)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              Reopen
+            </button>` : ''}
+        </div>
+      </article>`;
+  }
+
+  function statusLabel(s){
+    if (s === 'open') return 'Open';
+    if (s === 'pending') return 'In Review';
+    if (s === 'resolved') return 'Resolved';
+    if (s === 'dismissed') return 'Dismissed';
+    return s;
+  }
+
+  // ============ ACTIONS ============
+  function bindReportActions(){
+    document.querySelectorAll('[data-resolve]').forEach(btn => {
+      btn.addEventListener('click', () => changeStatus(btn.getAttribute('data-resolve'), 'resolved'));
+    });
+    document.querySelectorAll('[data-dismiss]').forEach(btn => {
+      btn.addEventListener('click', () => changeStatus(btn.getAttribute('data-dismiss'), 'dismissed'));
+    });
+    document.querySelectorAll('[data-reopen]').forEach(btn => {
+      btn.addEventListener('click', () => changeStatus(btn.getAttribute('data-reopen'), 'open'));
+    });
+
+    // View target
+    document.querySelectorAll('[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-view');
+        const id = btn.getAttribute('data-target');
+        openTarget(type, id);
+      });
+    });
+
+    // Delete & Resolve
+    document.querySelectorAll('[data-delete-target]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-delete-target');
+        const id = btn.getAttribute('data-target');
+        const reportId = btn.getAttribute('data-report');
+        if (!confirm(`Delete this ${type} and mark the report as resolved? This cannot be undone.`)) return;
+        deleteAndResolve(type, id, reportId, btn);
+      });
+    });
+  }
+
+  async function changeStatus(reportId, newStatus){
+    if (actionInFlight) return;
+    actionInFlight = reportId;
+    try {
+      await updateReportStatus(reportId, newStatus);
+      const r = allReports.find(x => x.id === reportId);
+      if (r) r.status = newStatus;
+      showToast(`Report marked ${statusLabel(newStatus).toLowerCase()}.`, 'success');
+      updateStats();
+      applyFilters();
+    } catch (e){
+      console.error(e);
+      showToast('Could not update report.', 'error');
+    } finally {
+      actionInFlight = null;
+    }
+  }
+
+  function openTarget(type, id){
+    if (type === 'post') location.href = `../posts.html#${encodeURIComponent(id)}`;
+    else if (type === 'comment'){
+      const c = commentsMap[id];
+      if (c && c.postId) location.href = `../posts.html#${encodeURIComponent(c.postId)}`;
+      else showToast('Post for this comment not found.', 'error');
+    }
+    else if (type === 'user') location.href = `../profile.html?uid=${encodeURIComponent(id)}`;
+  }
+
+  async function deleteAndResolve(type, id, reportId, btn){
+    if (actionInFlight) return;
+    actionInFlight = reportId;
+    const origHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span style="display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></span> Working…`;
+    try {
+      if (type === 'post') await deletePost(id);
+      else if (type === 'comment') await deleteComment(id);
+      else if (type === 'user') {
+        showToast('Cannot delete users from here. Use Members page.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = origHTML;
+        actionInFlight = null;
+        return;
+      }
+      await updateReportStatus(reportId, 'resolved');
+      const r = allReports.find(x => x.id === reportId);
+      if (r) r.status = 'resolved';
+      showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted and report resolved.`, 'success');
+      // Refresh maps
+      if (type === 'post') delete postsMap[id];
+      if (type === 'comment') delete commentsMap[id];
+      updateStats();
+      applyFilters();
+    } catch (e){
+      console.error(e);
+      showToast('Could not complete action.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = origHTML;
+    } finally {
+      actionInFlight = null;
+    }
+  }
+
+  // ============ BIND EVENTS ============
+  function bindEvents(){
+    let searchTimer = null;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      currentSearch = e.target.value;
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(applyFilters, 220);
+    });
+
+    document.getElementById('statusFilter').addEventListener('change', (e) => {
+      currentStatus = e.target.value;
+      applyFilters();
+    });
+    document.getElementById('typeFilter').addEventListener('change', (e) => {
+      currentType = e.target.value;
+      applyFilters();
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentPage > 1){ currentPage--; renderReports(); }
+    });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const totalPages = Math.ceil(filteredReports.length / PAGE_SIZE);
+      if (currentPage < totalPages){ currentPage++; renderReports(); }
+    });
+  }
+
+  // Spin keyframe (injected once)
+  if (!document.getElementById('spinStyle')){
+    const s = document.createElement('style');
+    s.id = 'spinStyle';
+    s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(s);
+  }
+</script>
+</body>
+</html>

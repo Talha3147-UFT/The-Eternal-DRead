@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login — The Eternal Dread</title>
+<link rel="icon" href="assets/images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ffffff;--bg-soft:#f8fafc;--text:#0b1220;--muted:#64748b;
+  --border:#e5e9f0;--accent:#0b1220;
+  --shadow-1:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --shadow-2:0 10px 30px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.04);
+  --shadow-3:0 20px 50px rgba(16,24,40,.12);
+  --shadow-glow:0 0 0 1px rgba(17,24,39,.04),0 20px 60px rgba(17,24,39,.10);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-serif:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font-sans);color:var(--text);line-height:1.6;
+  background:
+    radial-gradient(800px 600px at 20% 0%, rgba(15,23,42,.06), transparent 60%),
+    radial-gradient(700px 600px at 100% 100%, rgba(30,41,59,.05), transparent 60%),
+    var(--bg);
+  display:grid;place-items:center;padding:24px;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button,input{font-family:inherit}
+
+.card{
+  width:100%;max-width:440px;
+  padding:38px 34px 30px;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.78));
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.9);
+  outline:1px solid var(--border);
+  border-radius:26px;
+  box-shadow:var(--shadow-3), var(--shadow-glow),
+    inset 0 1px 0 rgba(255,255,255,.85);
+  animation:enter .55s var(--ease);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;top:-120px;right:-80px;width:260px;height:260px;
+  background:radial-gradient(circle,rgba(15,23,42,.10),transparent 65%);
+  pointer-events:none;
+}
+@keyframes enter{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:26px;position:relative}
+.brand-logo{
+  width:46px;height:46px;border-radius:14px;object-fit:cover;
+  border:1px solid var(--border);
+  box-shadow:0 10px 24px rgba(17,24,39,.14),0 0 0 4px rgba(17,24,39,.03);
+}
+.brand-text strong{
+  display:block;font-size:.86rem;letter-spacing:2.4px;text-transform:uppercase;font-weight:800;
+}
+.brand-text small{
+  display:block;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);margin-top:3px;font-weight:600;
+}
+
+h2{
+  font-family:var(--font-serif);font-size:1.9rem;font-weight:700;
+  letter-spacing:-.6px;margin-bottom:6px;color:#0b1220;
+}
+.sub{color:var(--muted);font-size:.92rem;margin-bottom:26px}
+
+label{
+  display:block;font-size:.78rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);margin-bottom:8px;
+}
+input[type="email"],
+input[type="password"]{
+  width:100%;padding:13px 15px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-size:.95rem;color:var(--text);
+  transition:border .2s var(--ease), box-shadow .25s var(--ease), background .2s;
+  box-shadow:var(--shadow-1), inset 0 1px 0 rgba(255,255,255,.8);
+}
+input::placeholder{color:#a7b0c0}
+input:focus{
+  outline:none;border-color:#0b1220;
+  box-shadow:0 0 0 4px rgba(15,23,42,.06), 0 6px 20px rgba(15,23,42,.08);
+}
+.field{margin-bottom:18px}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px 20px;border-radius:12px;
+  font-weight:600;font-size:.94rem;letter-spacing:.2px;
+  cursor:pointer;border:1px solid transparent;
+  transition:transform .25s var(--ease), box-shadow .3s var(--ease), background .2s;
+}
+.btn-primary{
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.16) inset,
+    0 12px 26px rgba(15,23,42,.30),
+    0 3px 8px rgba(15,23,42,.20);
+}
+.btn-primary:hover{
+  transform:translateY(-1px);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 18px 34px rgba(15,23,42,.36);
+}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.link-row{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:16px;font-size:.84rem;color:var(--muted);gap:12px;
+}
+.link-row a{transition:color .2s;font-weight:500}
+.link-row a:hover{color:#0b1220}
+
+.msg{
+  margin-top:14px;padding:11px 14px;border-radius:10px;
+  font-size:.85rem;display:none;border:1px solid transparent;
+}
+.msg.error{background:#fef2f2;color:#b91c1c;border-color:#fecaca;display:block}
+.msg.success{background:#f0fdf4;color:#166534;border-color:#bbf7d0;display:block}
+
+.spinner{
+  width:16px;height:16px;border:2px solid #fff;
+  border-top-color:transparent;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.sep{border:none;border-top:1px solid var(--border);margin:24px 0 18px}
+.foot{text-align:center;color:var(--muted);font-size:.76rem;line-height:1.7}
+.foot .powered{
+  display:inline-block;font-weight:700;letter-spacing:1.4px;color:#0b1220;margin-top:4px;
+  transition:all .3s var(--ease);
+}
+.foot .powered:hover{text-shadow:0 0 14px rgba(15,23,42,.35)}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <img src="assets/images/logo.png" alt="Logo" class="brand-logo" />
+    <div class="brand-text">
+      <strong>The Eternal Dread</strong>
+      <small>Friends • Memories • Forever</small>
+    </div>
+  </div>
+
+  <h2>Welcome back</h2>
+  <p class="sub">Sign in to continue the conversation.</p>
+
+  <form id="loginForm" novalidate>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" />
+    </div>
+    <button id="submitBtn" class="btn btn-primary" type="submit">
+      <span id="btnText">Login</span>
+    </button>
+    <div id="msg" class="msg"></div>
+    <div class="link-row">
+      <a href="#" id="forgotLink">Forgot password?</a>
+      <a href="register.html">Create account</a>
+    </div>
+  </form>
+
+  <hr class="sep" />
+  <div class="foot">
+    © The Eternal Dread
+    <div><span class="powered">Powered by: THx@T-SEEK@REX</span></div>
+  </div>
+</div>
+
+<script type="module">
+  import { login, resetPassword, getAuthState } from './js/auth.js';
+
+  const form = document.getElementById('loginForm');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+
+  getAuthState(u => { if (u) location.href = 'dashboard.html'; });
+
+  function setMsg(text, type='error'){ msg.textContent=text; msg.className='msg '+type; }
+  function setLoading(v){
+    btn.disabled = v;
+    btnText.innerHTML = v ? '<span class="spinner"></span>' : 'Login';
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    msg.className='msg';
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    if(!email || !password){ setMsg('Please fill in all fields.'); return; }
+    setLoading(true);
+    try{
+      await login(email, password);
+      setMsg('Success! Redirecting…', 'success');
+      setTimeout(()=> location.href = 'dashboard.html', 600);
+    }catch(err){
+      setLoading(false);
+      const code = (err.code || '').toString();
+      if(code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found'))
+        setMsg('Invalid email or password.');
+      else if(code.includes('too-many-requests'))
+        setMsg('Too many attempts. Please wait and try again.');
+      else setMsg(err.message || 'Login failed.');
+    }
+  });
+
+  document.getElementById('forgotLink').addEventListener('click', async (e)=>{
+    e.preventDefault();
+    const email = form.email.value.trim();
+    if(!email){ setMsg('Enter your email above, then click "Forgot password".'); return; }
+    try{
+      await resetPassword(email);
+      setMsg('Password reset email sent. Check your inbox.', 'success');
+    }catch(err){
+      setMsg(err.message || 'Could not send reset email.');
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ffffff" />
+<title>Settings — Admin — The Eternal Dread</title>
+<link rel="icon" href="../assets/images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ffffff;--bg-soft:#f8fafc;--text:#0b1220;--muted:#64748b;--muted-2:#94a3b8;
+  --border:#e5e9f0;--border-strong:#d7dde7;--accent:#0b1220;
+  --success:#16a34a;--danger:#dc2626;--warn:#f59e0b;--info:#0ea5e9;
+  --s1:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --s2:0 10px 30px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.04);
+  --s3:0 20px 50px rgba(16,24,40,.12);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --serif:'Playfair Display',Georgia,serif;
+  --sidebar-w:260px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);color:var(--text);line-height:1.6;
+  background:
+    radial-gradient(900px 700px at 12% -10%, rgba(15,23,42,.04), transparent 60%),
+    var(--bg);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button,input,textarea,select{font-family:inherit}
+
+.admin-shell{display:flex;min-height:100vh}
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  position:fixed;top:0;left:0;bottom:0;z-index:60;
+  display:flex;flex-direction:column;
+  transition:transform .3s var(--ease);
+  box-shadow:2px 0 20px rgba(15,23,42,.1);
+}
+.sidebar-head{
+  padding:22px 20px 18px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.sidebar-logo{
+  width:42px;height:42px;border-radius:12px;object-fit:cover;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 8px 20px rgba(0,0,0,.3),0 0 0 3px rgba(255,255,255,.04);
+}
+.sidebar-brand strong{
+  display:block;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;font-weight:800;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sidebar-brand small{
+  display:block;font-size:.54rem;letter-spacing:2.4px;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-top:3px;font-weight:600;
+}
+.sidebar-nav{flex:1;overflow-y:auto;padding:16px 12px}
+.nav-group-label{
+  font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.35);padding:12px 12px 8px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:10px;
+  font-size:.86rem;font-weight:500;color:rgba(255,255,255,.65);
+  transition:all .22s var(--ease);margin-bottom:2px;
+}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.85}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.06)}
+.nav-item.active{
+  color:#fff;background:rgba(255,255,255,.1);font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.nav-item.active svg{opacity:1}
+.sidebar-foot{
+  padding:14px 16px 18px;border-top:1px solid rgba(255,255,255,.06);
+  font-size:.68rem;color:rgba(255,255,255,.4);text-align:center;line-height:1.6;
+}
+.sidebar-foot strong{color:rgba(255,255,255,.7);letter-spacing:1.2px;font-weight:700;display:block;margin-top:3px;}
+
+.main{
+  flex:1;margin-left:var(--sidebar-w);min-width:0;
+  display:flex;flex-direction:column;
+}
+.topbar{
+  position:sticky;top:0;z-index:40;padding:14px 26px;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;
+}
+.hamburger{
+  display:none;width:38px;height:38px;border-radius:10px;
+  background:transparent;border:none;cursor:pointer;color:var(--text);
+  align-items:center;justify-content:center;
+}
+.hamburger:hover{background:rgba(15,23,42,.06)}
+.hamburger svg{width:20px;height:20px}
+.topbar-title{flex:1;min-width:0}
+.topbar-title h1{
+  font-family:var(--serif);font-size:1.15rem;font-weight:700;
+  letter-spacing:-.3px;color:#0b1220;
+}
+.topbar-title p{font-size:.76rem;color:var(--muted);margin-top:1px;}
+.admin-avatar{
+  width:38px;height:38px;border-radius:50%;overflow:hidden;
+  border:2px solid #fff;flex-shrink:0;
+  box-shadow:0 0 0 2px rgba(15,23,42,.08),0 6px 16px rgba(15,23,42,.15);
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  display:grid;place-items:center;font-weight:700;color:var(--muted);font-size:.85rem;
+}
+.admin-avatar img{width:100%;height:100%;object-fit:cover}
+
+.content{padding:26px;flex:1;max-width:960px}
+
+/* Section card */
+.settings-section{
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:var(--s2);
+  margin-bottom:20px;
+  overflow:hidden;
+  animation:cardIn .5s var(--ease) backwards;
+}
+.settings-section:nth-child(1){animation-delay:.03s}
+.settings-section:nth-child(2){animation-delay:.06s}
+.settings-section:nth-child(3){animation-delay:.09s}
+.settings-section:nth-child(4){animation-delay:.12s}
+.settings-section:nth-child(5){animation-delay:.15s}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.section-head{
+  display:flex;align-items:center;gap:12px;
+  padding:18px 22px;border-bottom:1px solid var(--border);
+  background:rgba(248,250,252,.4);
+}
+.section-head .icon{
+  width:38px;height:38px;border-radius:11px;
+  background:linear-gradient(180deg,#0f172a,#0b1220);
+  color:#fff;display:grid;place-items:center;flex-shrink:0;
+  box-shadow:0 8px 18px rgba(15,23,42,.24);
+}
+.section-head .icon svg{width:17px;height:17px}
+.section-head h2{
+  font-family:var(--serif);font-size:1.02rem;font-weight:700;
+  letter-spacing:-.3px;color:#0b1220;
+}
+.section-head .sub{font-size:.76rem;color:var(--muted);margin-top:2px}
+
+.section-body{padding:20px 22px}
+
+/* Setting rows */
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:14px 0;border-bottom:1px dashed var(--border);
+}
+.setting-row:last-child{border-bottom:none;padding-bottom:0}
+.setting-row:first-child{padding-top:0}
+.setting-info{flex:1;min-width:0}
+.setting-info h4{font-size:.9rem;font-weight:600;color:#0b1220;margin-bottom:2px;}
+.setting-info p{font-size:.79rem;color:var(--muted);line-height:1.5}
+
+/* Toggle */
+.toggle{
+  position:relative;width:42px;height:24px;flex-shrink:0;
+  background:#e2e8f0;border-radius:12px;cursor:pointer;
+  transition:background .25s var(--ease);
+  border:none;padding:0;
+}
+.toggle::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:20px;height:20px;border-radius:50%;background:#fff;
+  box-shadow:0 2px 6px rgba(15,23,42,.2);
+  transition:transform .25s var(--ease);
+}
+.toggle.on{background:#0b1220}
+.toggle.on::after{transform:translateX(18px)}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px;border-radius:11px;font-weight:600;font-size:.82rem;
+  cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text);
+  transition:all .25s var(--ease);white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--s2)}
+.btn svg{width:14px;height:14px}
+.btn-primary{
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;border-color:transparent;
+  box-shadow:0 10px 24px rgba(15,23,42,.28);
+}
+.btn-primary:hover{box-shadow:0 16px 34px rgba(15,23,42,.34)}
+.btn-danger{
+  background:#fff;color:#dc2626;border-color:rgba(220,38,38,.3);
+}
+.btn-danger:hover{background:#fef2f2;border-color:rgba(220,38,38,.5)}
+.btn-success{
+  background:#fff;color:#15803d;border-color:rgba(22,163,74,.3);
+}
+.btn-success:hover{background:#f0fdf4;border-color:rgba(22,163,74,.5)}
+
+/* Account card */
+.account-card{
+  display:flex;align-items:center;gap:16px;padding:16px;
+  background:rgba(15,23,42,.02);border:1px solid var(--border);
+  border-radius:14px;margin-bottom:16px;
+}
+.account-avatar{
+  width:64px;height:64px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  border:2px solid #fff;
+  box-shadow:0 8px 20px rgba(15,23,42,.14), 0 0 0 3px rgba(15,23,42,.04);
+  display:grid;place-items:center;font-weight:700;font-size:1.4rem;color:var(--muted);
+}
+.account-avatar img{width:100%;height:100%;object-fit:cover}
+.account-info{flex:1;min-width:0}
+.account-info strong{display:block;font-size:1rem;font-weight:600;color:#0b1220;}
+.account-info span{display:block;font-size:.82rem;color:var(--muted);margin-top:2px;}
+.account-info .role-badge{
+  display:inline-flex;align-items:center;gap:4px;margin-top:6px;
+  padding:3px 10px;border-radius:999px;
+  background:rgba(245,158,11,.14);color:#b45309;
+  font-size:.68rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+}
+
+/* Form fields */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-field{margin-bottom:14px}
+.form-field.full{grid-column:1/-1}
+.form-field label{
+  display:block;font-size:.72rem;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+}
+.form-field input,
+.form-field textarea{
+  width:100%;padding:11px 14px;border-radius:11px;
+  border:1px solid var(--border);background:#fff;
+  font-size:.88rem;color:var(--text);font-family:inherit;
+  box-shadow:var(--s1);transition:border .2s, box-shadow .25s;
+}
+.form-field textarea{resize:vertical;min-height:70px;line-height:1.5}
+.form-field input:focus,
+.form-field textarea:focus{
+  outline:none;border-color:#0b1220;
+  box-shadow:0 0 0 3px rgba(15,23,42,.05);
+}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+
+/* System info */
+.info-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+}
+.info-item{
+  padding:12px 14px;border-radius:11px;
+  background:rgba(15,23,42,.03);
+  border:1px solid var(--border);
+}
+.info-item .k{
+  font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted-2);margin-bottom:3px;
+}
+.info-item .v{
+  font-size:.86rem;color:#0b1220;font-weight:500;
+  word-break:break-word;
+}
+.info-item .v.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;}
+
+/* Danger zone */
+.danger-zone{
+  border-color:rgba(220,38,38,.2);
+  background:linear-gradient(180deg,#fff,#fef7f7);
+}
+.danger-zone .section-head{
+  background:rgba(254,242,242,.6);
+  border-bottom-color:rgba(220,38,38,.15);
+}
+.danger-zone .section-head .icon{
+  background:linear-gradient(180deg,#dc2626,#991b1b);
+  box-shadow:0 8px 18px rgba(220,38,38,.28);
+}
+.danger-zone .section-head h2{color:#991b1b}
+.danger-zone .section-head .sub{color:#b91c1c}
+
+/* Toast */
+.toast-wrap{
+  position:fixed;top:20px;right:20px;z-index:200;
+  display:flex;flex-direction:column;gap:10px;pointer-events:none;
+}
+.toast{
+  min-width:250px;max-width:340px;padding:12px 16px;border-radius:12px;
+  background:#0b1220;color:#fff;font-size:.84rem;
+  box-shadow:0 14px 30px rgba(15,23,42,.35);
+  display:flex;align-items:center;gap:10px;pointer-events:auto;
+  animation:toastIn .3s var(--ease);
+}
+.toast.success{background:#065f46}
+.toast.error{background:#991b1b}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* Modal */
+.modal-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(15,23,42,.45);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+  animation:fadeIn .25s var(--ease);
+}
+.modal-overlay.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  width:100%;max-width:420px;
+  background:#fff;border-radius:20px;
+  box-shadow:0 30px 80px rgba(0,0,0,.35);
+  padding:26px 24px;
+  animation:modalIn .35s var(--ease);
+  position:relative;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}
+.modal h3{
+  font-family:var(--serif);font-size:1.2rem;font-weight:700;
+  letter-spacing:-.3px;margin-bottom:6px;
+}
+.modal p{font-size:.86rem;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+.btn-modal{
+  padding:10px 18px;border-radius:11px;font-weight:600;font-size:.82rem;
+  cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text);
+  transition:all .25s;
+}
+.btn-modal:hover{transform:translateY(-1px);box-shadow:var(--s2)}
+.btn-modal.danger{
+  background:linear-gradient(180deg,#991b1b,#7f1d1d);color:#fff;border-color:transparent;
+}
+.btn-modal:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.spinner{
+  width:14px;height:14px;border:2px solid currentColor;
+  border-top-color:transparent;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;
+  vertical-align:middle;margin-right:6px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Overlay */
+.overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:55;
+  display:none;backdrop-filter:blur(3px);
+}
+.overlay.show{display:block;animation:fadeIn .2s}
+
+@media (max-width:900px){
+  .form-grid{grid-template-columns:1fr}
+  .info-grid{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .topbar{padding:12px 16px}
+  .topbar-title h1{font-size:1rem}
+  .content{padding:16px}
+  .section-head{padding:14px 16px;gap:10px}
+  .section-head .icon{width:34px;height:34px}
+  .section-head h2{font-size:.94rem}
+  .section-body{padding:16px}
+  .setting-row{flex-wrap:wrap;gap:10px}
+  .account-card{flex-direction:column;text-align:center}
+  .account-info .role-badge{margin-left:auto;margin-right:auto}
+  .form-actions{flex-direction:column-reverse}
+  .form-actions .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="admin-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <img src="../assets/images/logo.png" alt="Logo" class="sidebar-logo" />
+      <div class="sidebar-brand">
+        <strong>Eternal Dread</strong>
+        <small>Admin Panel</small>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+      <div class="nav-group-label">Manage</div>
+      <a href="members.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        Members
+      </a>
+      <a href="posts.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Posts
+      </a>
+      <a href="comments.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Comments
+      </a>
+      <a href="events.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Events
+      </a>
+      <a href="reports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Reports
+      </a>
+      <div class="nav-group-label">System</div>
+      <a href="settings.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sidebar-foot">
+      © The Eternal Dread
+      <strong>THx@T-SEEK@REX</strong>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <div class="topbar-title">
+        <h1>Admin Settings</h1>
+        <p>Account, system, and maintenance</p>
+      </div>
+      <div class="admin-avatar" id="adminAvatar">
+        <span id="adminInitial">A</span>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ADMIN ACCOUNT -->
+      <section class="settings-section">
+        <div class="section-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <h2>Admin Account</h2>
+            <div class="sub">Your admin identity</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="account-card">
+            <div class="account-avatar" id="accountAvatar">
+              <span id="accountInitial">A</span>
+            </div>
+            <div class="account-info">
+              <strong id="accountName">Loading…</strong>
+              <span id="accountEmail">—</span>
+              <span class="role-badge">★ Administrator</span>
+            </div>
+            <a href="../profile.html" class="btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+              Edit Profile
+            </a>
+          </div>
+
+          <form id="adminProfileForm">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="aName">Name</label>
+                <input id="aName" type="text" placeholder="Your name" />
+              </div>
+              <div class="form-field">
+                <label for="aNickname">Nickname</label>
+                <input id="aNickname" type="text" placeholder="Nickname" />
+              </div>
+              <div class="form-field full">
+                <label for="aBio">Bio</label>
+                <textarea id="aBio" placeholder="A short line about you…"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="saveAdminBtn">
+                <span id="saveAdminText">Save Changes</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- SYSTEM PREFERENCES -->
+      <section class="settings-section">
+        <div class="section-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <div>
+            <h2>System Preferences</h2>
+            <div class="sub">App-wide admin behaviour (saved locally)</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Auto-refresh stats</h4>
+              <p>Refresh dashboard statistics every 60 seconds</p>
+            </div>
+            <button class="toggle" data-pref="autoRefresh" aria-label="Auto refresh stats"></button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+                            <h4>Confirm destructive actions</h4>
+              <p>Always ask before deleting posts, comments, or events</p>
+            </div>
+            <button class="toggle" data-pref="confirmDelete" aria-label="Confirm deletes"></button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Show user IDs</h4>
+              <p>Display Firestore UIDs in member lists</p>
+            </div>
+            <button class="toggle" data-pref="showUserIds" aria-label="Show user IDs"></button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Compact tables</h4>
+              <p>Reduce row padding for denser lists</p>
+            </div>
+            <button class="toggle" data-pref="compactTables" aria-label="Compact tables"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SYSTEM INFO -->
+      <section class="settings-section">
+        <div class="section-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </div>
+          <div>
+            <h2>System Info</h2>
+            <div class="sub">Environment and build details</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="k">App Version</div>
+              <div class="v">The Eternal Dread v1.0</div>
+            </div>
+            <div class="info-item">
+              <div class="k">Admin User ID</div>
+              <div class="v mono" id="infoUid">—</div>
+            </div>
+            <div class="info-item">
+              <div class="k">Signed In As</div>
+              <div class="v" id="infoEmail">—</div>
+            </div>
+            <div class="info-item">
+              <div class="k">Session Started</div>
+              <div class="v" id="infoSession">—</div>
+            </div>
+            <div class="info-item">
+              <div class="k">Browser</div>
+              <div class="v" id="infoBrowser">—</div>
+            </div>
+            <div class="info-item">
+              <div class="k">Platform</div>
+              <div class="v" id="infoPlatform">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECURITY -->
+      <section class="settings-section">
+        <div class="section-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <h2>Security</h2>
+            <div class="sub">Session and account protection</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Password</h4>
+              <p>Send a password reset email to <strong id="resetEmail" style="color:#0b1220">your email</strong></p>
+            </div>
+            <button class="btn" id="resetPasswordBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
+              Send Reset Email
+            </button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Sign out</h4>
+              <p>End this admin session on this device</p>
+            </div>
+            <button class="btn btn-danger" id="logoutBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Log Out
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- DANGER ZONE -->
+      <section class="settings-section danger-zone">
+        <div class="section-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <h2>Danger Zone</h2>
+            <div class="sub">Permanent actions — use with care</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Reset admin preferences</h4>
+              <p>Restore all admin system preferences to defaults</p>
+            </div>
+            <button class="btn btn-danger" id="resetPrefsBtn">Reset Preferences</button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Clear local session cache</h4>
+              <p>Remove locally stored admin preferences on this device</p>
+            </div>
+            <button class="btn btn-danger" id="clearCacheBtn">Clear Cache</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3 id="confirmTitle">Are you sure?</h3>
+    <p id="confirmText">This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-modal" id="confirmCancel">Cancel</button>
+      <button type="button" class="btn-modal danger" id="confirmOk">
+        <span id="confirmOkText">Confirm</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script type="module">
+  import { requireAdminAuth, logout, resetPassword } from '../js/auth.js';
+  import { getUserDoc, updateUserProfile } from '../js/app.js';
+  import { showToast, initAdminUI } from '../js/admin.js';
+
+  initAdminUI();
+
+  let currentAdmin = null;
+  let adminDoc = null;
+  let confirmCallback = null;
+
+  const PREF_KEY = 'ted_admin_prefs';
+  const DEFAULT_PREFS = {
+    autoRefresh: true,
+    confirmDelete: true,
+    showUserIds: false,
+    compactTables: false
+  };
+  const sessionStart = new Date();
+
+  // ============ ADMIN GUARD ============
+  requireAdminAuth(async (user, doc) => {
+    currentAdmin = user;
+    adminDoc = doc;
+    renderAccount();
+    fillProfileForm();
+    fillSystemInfo();
+    initToggles();
+    bindActions();
+  });
+
+  // ============ HELPERS ============
+  function esc(s){
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  // ============ RENDER ACCOUNT ============
+  function renderAccount(){
+    const name = (adminDoc && adminDoc.name) || 'Admin';
+    const email = (adminDoc && adminDoc.email) || currentAdmin.email || '—';
+    const photo = (adminDoc && adminDoc.profileImageBase64) || '';
+    const initial = name.charAt(0).toUpperCase();
+
+    // Header avatar
+    const hWrap = document.getElementById('adminAvatar');
+    if (photo){
+      hWrap.innerHTML = `<img src="${photo}" alt="">`;
+    } else {
+      hWrap.innerHTML = `<span>${esc(initial)}</span>`;
+    }
+
+    // Account avatar
+    const aWrap = document.getElementById('accountAvatar');
+    if (photo){
+      aWrap.innerHTML = `<img src="${photo}" alt="">`;
+    } else {
+      aWrap.innerHTML = `<span>${esc(initial)}</span>`;
+    }
+
+    document.getElementById('accountName').textContent = name;
+    document.getElementById('accountEmail').textContent = email;
+    document.getElementById('resetEmail').textContent = email;
+    document.getElementById('infoEmail').textContent = email;
+    document.getElementById('infoUid').textContent = currentAdmin.uid;
+    document.title = 'Settings — Admin — The Eternal Dread';
+  }
+
+  function fillProfileForm(){
+    document.getElementById('aName').value = adminDoc.name || '';
+    document.getElementById('aNickname').value = adminDoc.nickname || '';
+    document.getElementById('aBio').value = adminDoc.bio || '';
+  }
+
+  function fillSystemInfo(){
+    const nav = navigator.userAgent;
+    let browser = 'Unknown';
+    if (nav.includes('Firefox')) browser = 'Firefox';
+    else if (nav.includes('Edg')) browser = 'Edge';
+    else if (nav.includes('Chrome')) browser = 'Chrome';
+    else if (nav.includes('Safari')) browser = 'Safari';
+
+    document.getElementById('infoBrowser').textContent = browser;
+    document.getElementById('infoPlatform').textContent = navigator.platform || '—';
+    document.getElementById('infoSession').textContent = sessionStart.toLocaleString(undefined, {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  // ============ TOGGLES ============
+  function loadPrefs(){
+    try {
+      const raw = localStorage.getItem(PREF_KEY);
+      if (!raw) return { ...DEFAULT_PREFS };
+      return { ...DEFAULT_PREFS, ...JSON.parse(raw) };
+    } catch (e){
+      return { ...DEFAULT_PREFS };
+    }
+  }
+  function savePrefs(prefs){
+    try {
+      localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
+    } catch (e){ /* quota */ }
+  }
+  function initToggles(){
+    const prefs = loadPrefs();
+    document.querySelectorAll('.toggle[data-pref]').forEach(btn => {
+      const key = btn.getAttribute('data-pref');
+      const isOn = !!prefs[key];
+      btn.classList.toggle('on', isOn);
+      btn.setAttribute('aria-pressed', String(isOn));
+      btn.addEventListener('click', () => {
+        const next = !btn.classList.contains('on');
+        btn.classList.toggle('on', next);
+        btn.setAttribute('aria-pressed', String(next));
+        const updated = loadPrefs();
+        updated[key] = next;
+        savePrefs(updated);
+        showToast(next ? 'Enabled' : 'Disabled', 'success');
+      });
+    });
+  }
+
+  // ============ PROFILE FORM ============
+  document.getElementById('adminProfileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('aName').value.trim();
+    const nickname = document.getElementById('aNickname').value.trim();
+    const bio = document.getElementById('aBio').value.trim();
+
+    if (!name || !nickname){
+      showToast('Name and nickname are required.', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('saveAdminBtn');
+    const txt = document.getElementById('saveAdminText');
+    btn.disabled = true;
+    txt.innerHTML = '<span class="spinner" style="border-color:#fff;border-top-color:transparent"></span> Saving…';
+
+    try {
+      await updateUserProfile(currentAdmin.uid, { name, nickname, bio });
+      adminDoc = { ...adminDoc, name, nickname, bio };
+      renderAccount();
+      showToast('Profile updated.', 'success');
+    } catch (err){
+      console.error(err);
+      showToast(err.message || 'Could not update profile.', 'error');
+    } finally {
+      btn.disabled = false;
+      txt.textContent = 'Save Changes';
+    }
+  });
+
+  // ============ ACTIONS ============
+  function bindActions(){
+    // Password reset
+    document.getElementById('resetPasswordBtn').addEventListener('click', () => {
+      const email = (adminDoc && adminDoc.email) || currentAdmin.email;
+      if (!email){
+        showToast('No email on file.', 'error');
+        return;
+      }
+      showConfirm({
+        title: 'Send password reset?',
+        text: `A reset link will be emailed to ${email}.`,
+        okText: 'Send',
+        onConfirm: async () => {
+          try {
+            await resetPassword(email);
+            showToast('Reset email sent.', 'success');
+          } catch (err){
+            console.error(err);
+            showToast(err.message || 'Could not send reset email.', 'error');
+          }
+        }
+      });
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      showConfirm({
+        title: 'Log out of admin?',
+        text: 'You will need to sign in again to access the admin panel.',
+        okText: 'Log Out',
+        onConfirm: async () => {
+          try {
+            await logout();
+            location.href = 'index.html';
+          } catch (err){
+            console.error(err);
+            showToast('Could not log out.', 'error');
+          }
+        }
+      });
+    });
+
+    // Reset preferences
+    document.getElementById('resetPrefsBtn').addEventListener('click', () => {
+      showConfirm({
+        title: 'Reset admin preferences?',
+        text: 'All toggles on this page will be restored to their default states.',
+        okText: 'Reset',
+        onConfirm: () => {
+          try {
+            localStorage.removeItem(PREF_KEY);
+            showToast('Preferences reset.', 'success');
+            setTimeout(() => location.reload(), 600);
+          } catch (e){
+            showToast('Could not reset preferences.', 'error');
+          }
+        }
+      });
+    });
+
+    // Clear cache
+    document.getElementById('clearCacheBtn').addEventListener('click', () => {
+      showConfirm({
+        title: 'Clear local session cache?',
+        text: 'Local admin preferences and drafts will be removed from this device.',
+        okText: 'Clear',
+        onConfirm: () => {
+          try {
+            localStorage.removeItem(PREF_KEY);
+            localStorage.removeItem('ted_post_draft');
+            localStorage.removeItem('ted_create_post_draft');
+            localStorage.removeItem('ted_chat_draft');
+            showToast('Local cache cleared.', 'success');
+          } catch (e){
+            showToast('Could not clear cache.', 'error');
+          }
+        }
+      });
+    });
+  }
+
+  // ============ CONFIRM MODAL ============
+  const confirmModal = document.getElementById('confirmModal');
+  function showConfirm({ title, text, okText, onConfirm }){
+    document.getElementById('confirmTitle').textContent = title || 'Are you sure?';
+    document.getElementById('confirmText').textContent = text || 'This action cannot be undone.';
+    document.getElementById('confirmOkText').textContent = okText || 'Confirm';
+    confirmCallback = onConfirm;
+    confirmModal.classList.add('open');
+  }
+  function hideConfirm(){
+    confirmModal.classList.remove('open');
+    confirmCallback = null;
+  }
+  document.getElementById('confirmOk').addEventListener('click', async () => {
+    const cb = confirmCallback;
+    hideConfirm();
+    if (typeof cb === 'function') await cb();
+  });
+  document.getElementById('confirmCancel').addEventListener('click', hideConfirm);
+  confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) hideConfirm();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideConfirm();
+  });
+</script>
+</body>
+</html>

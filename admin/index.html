@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ffffff" />
+<title>Admin Login — The Eternal Dread</title>
+<link rel="icon" href="../assets/images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ffffff;--text:#0b1220;--muted:#64748b;--muted-2:#94a3b8;
+  --border:#e5e9f0;--accent:#0b1220;--danger:#dc2626;
+  --s1:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --s2:0 10px 30px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.04);
+  --s3:0 20px 50px rgba(16,24,40,.12);
+  --glow:0 0 0 1px rgba(17,24,39,.04),0 20px 60px rgba(17,24,39,.10);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --serif:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--sans);color:var(--text);line-height:1.6;
+  background:
+    radial-gradient(800px 600px at 20% 0%, rgba(15,23,42,.06), transparent 60%),
+    radial-gradient(700px 600px at 100% 100%, rgba(30,41,59,.05), transparent 60%),
+    #fff;
+  display:grid;place-items:center;padding:24px;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button,input{font-family:inherit}
+
+.card{
+  width:100%;max-width:440px;padding:36px 32px 28px;
+  background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,.8));
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.9);
+  outline:1px solid var(--border);
+  border-radius:26px;
+  box-shadow:var(--s3), var(--glow), inset 0 1px 0 rgba(255,255,255,.85);
+  animation:enter .55s var(--ease);
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;top:-120px;right:-80px;width:260px;height:260px;
+  background:radial-gradient(circle,rgba(15,23,42,.10),transparent 65%);
+  pointer-events:none;
+}
+@keyframes enter{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px;position:relative}
+.brand-logo{
+  width:46px;height:46px;border-radius:14px;object-fit:cover;
+  border:1px solid var(--border);
+  box-shadow:0 10px 24px rgba(17,24,39,.14),0 0 0 4px rgba(17,24,39,.03);
+}
+.brand-text strong{
+  display:block;font-size:.84rem;letter-spacing:2.4px;text-transform:uppercase;font-weight:800;
+}
+.brand-text small{
+  display:block;font-size:.58rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);margin-top:3px;font-weight:600;
+}
+.admin-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 11px;border-radius:999px;
+  background:rgba(15,23,42,.06);border:1px solid rgba(15,23,42,.1);
+  font-size:.64rem;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:16px;position:relative;
+}
+.admin-badge svg{width:11px;height:11px}
+
+h2{
+  font-family:var(--serif);font-size:1.85rem;font-weight:700;
+  letter-spacing:-.6px;margin-bottom:6px;color:#0b1220;position:relative;
+}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:24px;position:relative;}
+
+label{
+  display:block;font-size:.74rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);margin-bottom:8px;
+}
+input[type="email"],
+input[type="password"]{
+  width:100%;padding:13px 15px;border-radius:12px;
+  border:1px solid var(--border);background:#fff;
+  font-size:.94rem;color:var(--text);
+  transition:border .2s var(--ease), box-shadow .25s var(--ease);
+  box-shadow:var(--s1), inset 0 1px 0 rgba(255,255,255,.8);
+}
+input::placeholder{color:#a7b0c0}
+input:focus{
+  outline:none;border-color:#0b1220;
+  box-shadow:0 0 0 4px rgba(15,23,42,.06), 0 6px 20px rgba(15,23,42,.08);
+}
+.field{margin-bottom:16px;position:relative}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px 20px;border-radius:12px;
+  font-weight:600;font-size:.92rem;letter-spacing:.2px;
+  cursor:pointer;border:1px solid transparent;
+  transition:all .25s var(--ease);
+}
+.btn-primary{
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  box-shadow:0 1px 0 rgba(255,255,255,.16) inset,
+    0 12px 26px rgba(15,23,42,.30), 0 3px 8px rgba(15,23,42,.20);
+}
+.btn-primary:hover{
+  transform:translateY(-1px);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 18px 34px rgba(15,23,42,.36);
+}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.msg{
+  margin-top:14px;padding:11px 14px;border-radius:10px;
+  font-size:.84rem;display:none;border:1px solid transparent;
+}
+.msg.error{background:#fef2f2;color:#b91c1c;border-color:#fecaca;display:block}
+.msg.success{background:#f0fdf4;color:#166534;border-color:#bbf7d0;display:block}
+
+.spinner{
+  width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;
+  border-radius:50%;animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.sep{border:none;border-top:1px solid var(--border);margin:24px 0 18px}
+.foot{text-align:center;color:var(--muted);font-size:.74rem;line-height:1.7}
+.foot .powered{
+  display:inline-block;font-weight:700;letter-spacing:1.4px;color:#0b1220;margin-top:4px;
+  transition:all .3s var(--ease);
+}
+.foot .powered:hover{text-shadow:0 0 14px rgba(15,23,42,.35)}
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;margin-top:14px;
+  font-size:.78rem;color:var(--muted);transition:color .2s;
+}
+.back-link:hover{color:#0b1220}
+.back-link svg{width:12px;height:12px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <img src="../assets/images/logo.png" alt="Logo" class="brand-logo" />
+    <div class="brand-text">
+      <strong>The Eternal Dread</strong>
+      <small>Friends • Memories • Forever</small>
+    </div>
+  </div>
+
+  <div class="admin-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Admin Access
+  </div>
+
+  <h2>Control panel</h2>
+  <p class="sub">Restricted. Authorized administrators only.</p>
+
+  <form id="adminLoginForm" novalidate>
+    <div class="field">
+      <label for="email">Admin Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required placeholder="admin@example.com" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" />
+    </div>
+    <button id="submitBtn" class="btn btn-primary" type="submit">
+      <span id="btnText">Sign In as Admin</span>
+    </button>
+    <div id="msg" class="msg"></div>
+  </form>
+
+  <hr class="sep" />
+  <div class="foot">
+    © The Eternal Dread • Admin
+    <div><span class="powered">Powered by: THx@T-SEEK@REX</span></div>
+    <a href="../index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to main site
+    </a>
+  </div>
+</div>
+
+<script type="module">
+  import { login, getAuthState } from '../js/auth.js';
+  import { getUserDoc } from '../js/app.js';
+
+  const form = document.getElementById('adminLoginForm');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+
+  function setMsg(text, type='error'){ msg.textContent = text; msg.className = 'msg ' + type; }
+  function setLoading(v){ btn.disabled = v; btnText.innerHTML = v ? '<span class="spinner"></span> Verifying…' : 'Sign In as Admin'; }
+
+  // If already signed in, check admin role and redirect
+  getAuthState(async (user) => {
+    if (!user) return;
+    try {
+      const doc = await getUserDoc(user.uid);
+      if (doc && doc.role === 'admin'){
+        location.href = 'dashboard.html';
+      }
+    } catch (e){ /* silent */ }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.className = 'msg';
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    if (!email || !password){ setMsg('Please fill in all fields.'); return; }
+
+    setLoading(true);
+    try {
+      const cred = await login(email, password);
+      const uid = cred.user.uid;
+      const doc = await getUserDoc(uid);
+
+      if (!doc || doc.role !== 'admin'){
+        // Not an admin — sign them out, deny access
+        try {
+          const { logout } = await import('../js/auth.js');
+          await logout();
+        } catch (e){ /* ignore */ }
+        setMsg('Access denied. This account does not have admin privileges.');
+        setLoading(false);
+        return;
+      }
+
+      setMsg('Access granted. Redirecting…', 'success');
+      setTimeout(()=> location.href = 'dashboard.html', 600);
+    } catch (err){
+      setLoading(false);
+      const code = (err.code || '').toString();
+      if (code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found'))
+        setMsg('Invalid admin credentials.');
+      else if (code.includes('too-many-requests'))
+        setMsg('Too many attempts. Please wait.');
+      else setMsg(err.message || 'Login failed.');
+    }
+  });
+</script>
+</body>
+</html>

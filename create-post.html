@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ffffff" />
+<title>Create Post — The Eternal Dread</title>
+<link rel="icon" href="assets/images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ffffff; --bg-soft:#f8fafc; --text:#0b1220; --muted:#64748b; --muted-2:#94a3b8;
+  --border:#e5e9f0; --border-strong:#d7dde7; --accent:#0b1220;
+  --success:#16a34a; --danger:#dc2626;
+  --shadow-1:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --shadow-2:0 10px 30px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.04);
+  --shadow-3:0 20px 50px rgba(16,24,40,.12);
+  --shadow-glow:0 0 0 1px rgba(17,24,39,.04),0 20px 60px rgba(17,24,39,.10);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-serif:'Playfair Display',Georgia,serif;
+  --radius:14px; --radius-lg:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);color:var(--text);line-height:1.6;
+  background:
+    radial-gradient(900px 700px at 12% -10%, rgba(15,23,42,.05), transparent 60%),
+    radial-gradient(700px 600px at 100% 100%, rgba(30,41,59,.04), transparent 60%),
+    var(--bg);
+  min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:80px;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button,input,textarea{font-family:inherit}
+
+header.nav-wrap{position:sticky;top:0;z-index:50;padding:14px 22px}
+.nav{
+  max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 10px 16px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(226,232,240,.9);border-radius:16px;
+  box-shadow:var(--shadow-2), inset 0 1px 0 rgba(255,255,255,.6);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{
+  width:38px;height:38px;border-radius:12px;object-fit:cover;
+  border:1px solid var(--border);
+  box-shadow:0 8px 20px rgba(17,24,39,.12),0 0 0 4px rgba(17,24,39,.03);
+}
+.brand-text strong{display:block;font-size:.82rem;letter-spacing:2.2px;text-transform:uppercase;font-weight:800;}
+.brand-text small{display:block;font-size:.58rem;letter-spacing:2.6px;text-transform:uppercase;color:var(--muted);margin-top:2px;font-weight:600;}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;
+  font-size:.85rem;font-weight:500;color:var(--muted);transition:all .22s var(--ease);
+}
+.nav-links a svg{width:16px;height:16px;opacity:.85}
+.nav-links a:hover{color:var(--text);background:rgba(15,23,42,.04)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+  background:rgba(255,255,255,.6);border:1px solid var(--border);
+  color:var(--text);cursor:pointer;position:relative;transition:all .22s var(--ease);
+}
+.icon-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-2)}
+.avatar-btn{
+  width:38px;height:38px;border-radius:50%;padding:0;overflow:hidden;
+  border:2px solid #fff;cursor:pointer;
+  box-shadow:0 0 0 2px rgba(15,23,42,.08),0 6px 16px rgba(15,23,42,.15);
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  transition:transform .25s var(--ease);
+}
+.avatar-btn:hover{transform:scale(1.04)}
+.avatar-btn img{width:100%;height:100%;object-fit:cover}
+
+/* LAYOUT */
+main{
+  max-width:920px;margin:0 auto;padding:32px 22px 40px;
+}
+
+/* HEADER */
+.page-head{
+  text-align:center;margin-bottom:28px;
+}
+.page-head .eyebrow{
+  display:inline-block;padding:6px 14px;border-radius:999px;
+  background:rgba(15,23,42,.04);border:1px solid var(--border);
+  font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;
+}
+.page-head h1{
+  font-family:var(--font-serif);
+  font-size:clamp(1.8rem,3.6vw,2.6rem);
+  font-weight:700;letter-spacing:-.7px;color:#0b1220;margin-bottom:8px;
+}
+.page-head p{color:var(--muted);font-size:.96rem;max-width:520px;margin:0 auto;}
+
+/* COMPOSER CARD */
+.composer-card{
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);
+  border-radius:24px;
+  box-shadow:var(--shadow-3), var(--shadow-glow);
+  overflow:hidden;
+  animation:cardIn .5s var(--ease);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.composer-header{
+  display:flex;align-items:center;gap:14px;
+  padding:22px 26px 18px;
+  border-bottom:1px solid var(--border);
+}
+.composer-avatar{
+  width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  border:2px solid #fff;
+  box-shadow:0 8px 20px rgba(15,23,42,.14), 0 0 0 3px rgba(15,23,42,.04);
+  display:grid;place-items:center;color:var(--muted);font-weight:700;font-size:1.1rem;
+}
+.composer-avatar img{width:100%;height:100%;object-fit:cover}
+.composer-user{flex:1;min-width:0}
+.composer-user strong{display:block;font-size:.96rem;font-weight:600;color:#0b1220;}
+.composer-user span{
+  display:block;font-size:.78rem;color:var(--muted);
+  display:inline-flex;align-items:center;gap:5px;margin-top:2px;
+}
+.composer-user span::before{
+  content:"";width:6px;height:6px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 0 3px rgba(34,197,94,.2);
+}
+.draft-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:999px;
+  background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);
+  font-size:.7rem;font-weight:600;letter-spacing:.4px;
+  color:#b45309;text-transform:uppercase;
+}
+.draft-pill svg{width:11px;height:11px}
+
+/* TEXTAREA */
+.composer-body{padding:8px 26px 20px}
+.composer-textarea{
+  width:100%;border:none;outline:none;background:transparent;resize:none;
+  font-size:1.05rem;line-height:1.7;color:#1f2937;font-family:inherit;
+  min-height:140px;padding:12px 0;
+}
+.composer-textarea::placeholder{color:#cbd5e1}
+.composer-textarea:focus{outline:none}
+
+/* IMAGE PREVIEW */
+.image-preview-wrap{
+  position:relative;margin:8px 0 16px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-2);
+  background:#f8fafc;
+  animation:previewIn .35s var(--ease);
+}
+@keyframes previewIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.image-preview-wrap img{
+  width:100%;max-height:420px;object-fit:contain;
+  display:block;background:#0b1220;
+}
+.image-preview-remove{
+  position:absolute;top:12px;right:12px;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.72);color:#fff;border:none;cursor:pointer;
+  display:grid;place-items:center;
+  transition:all .2s;
+  box-shadow:0 6px 16px rgba(0,0,0,.3);
+}
+.image-preview-remove:hover{background:rgba(0,0,0,.9);transform:scale(1.06)}
+.image-preview-remove svg{width:16px;height:16px}
+
+/* TOOLBAR */
+.composer-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px 26px;
+  border-top:1px solid var(--border);
+  background:rgba(248,250,252,.5);
+  flex-wrap:wrap;
+}
+.toolbar-left{display:flex;gap:6px;flex-wrap:wrap}
+.tool-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px;border-radius:11px;
+  background:#fff;border:1px solid var(--border);
+  cursor:pointer;font-size:.82rem;font-weight:500;color:var(--muted);
+  transition:all .22s var(--ease);
+}
+.tool-btn:hover{
+  color:#0b1220;border-color:var(--border-strong);
+  transform:translateY(-1px);
+  box-shadow:var(--shadow-1);
+}
+.tool-btn svg{width:15px;height:15px}
+.tool-btn.danger{color:#dc2626;border-color:rgba(220,38,38,.2)}
+.tool-btn.danger:hover{background:#fef2f2;border-color:rgba(220,38,38,.4)}
+
+.toolbar-right{display:flex;align-items:center;gap:8px}
+.char-counter{
+  font-size:.76rem;color:var(--muted-2);font-weight:500;
+  padding:0 6px;
+}
+.char-counter.warn{color:#f59e0b}
+.char-counter.over{color:#dc2626}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 22px;border-radius:12px;
+  font-weight:600;font-size:.88rem;letter-spacing:.2px;
+  cursor:pointer;border:1px solid transparent;
+  transition:all .25s var(--ease);
+}
+.btn-ghost{background:#fff;border-color:var(--border);color:var(--text);}
+.btn-ghost:hover{transform:translateY(-1px);box-shadow:var(--shadow-2)}
+.btn-primary{
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.16) inset,
+    0 12px 26px rgba(15,23,42,.30),
+    0 3px 8px rgba(15,23,42,.20);
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 18px 34px rgba(15,23,42,.36);
+}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.spinner{
+  width:14px;height:14px;border:2px solid #fff;
+  border-top-color:transparent;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* HELP / TIPS */
+.tips{
+  margin-top:22px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+}
+.tip-card{
+  padding:16px 18px;border-radius:14px;
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-1);
+  transition:all .25s var(--ease);
+}
+.tip-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-2)}
+.tip-card .tip-icon{
+  width:30px;height:30px;border-radius:8px;
+  background:rgba(15,23,42,.05);color:#0b1220;
+  display:grid;place-items:center;margin-bottom:10px;
+}
+.tip-card .tip-icon svg{width:14px;height:14px}
+.tip-card h4{font-size:.82rem;font-weight:600;color:#0b1220;margin-bottom:3px;}
+.tip-card p{font-size:.76rem;color:var(--muted);line-height:1.5;}
+
+/* Toast */
+.toast-wrap{
+  position:fixed;top:20px;right:20px;z-index:200;
+  display:flex;flex-direction:column;gap:10px;pointer-events:none;
+}
+.toast{
+  min-width:250px;max-width:340px;padding:12px 16px;border-radius:12px;
+  background:#0b1220;color:#fff;font-size:.86rem;
+  box-shadow:0 14px 30px rgba(15,23,42,.35);
+  display:flex;align-items:center;gap:10px;pointer-events:auto;
+  animation:toastIn .3s var(--ease);
+}
+.toast.success{background:#065f46}
+.toast.error{background:#991b1b}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* Footer */
+footer.page-footer{
+  max-width:1280px;margin:20px auto 0;padding:24px 22px 10px;
+  text-align:center;color:var(--muted);font-size:.78rem;line-height:1.7;
+  border-top:1px solid var(--border);
+}
+footer.page-footer .powered{
+  display:inline-block;font-weight:700;letter-spacing:1.4px;color:#0b1220;margin-top:4px;
+  transition:all .3s var(--ease);
+}
+footer.page-footer .powered:hover{text-shadow:0 0 14px rgba(15,23,42,.35)}
+
+/* MOBILE NAV */
+.mobile-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:60;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--border);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  box-shadow:0 -10px 30px rgba(15,23,42,.06);
+}
+.mobile-nav ul{list-style:none;display:flex;justify-content:space-around;align-items:flex-end;}
+.mobile-nav a{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 10px;border-radius:10px;color:var(--muted);
+  font-size:.66rem;font-weight:600;letter-spacing:.4px;transition:all .22s var(--ease);
+}
+.mobile-nav a svg{width:20px;height:20px}
+.mobile-nav a.active{color:#0b1220}
+.mobile-nav a.active svg{stroke-width:2.5}
+.mobile-nav a.mobile-plus{
+  width:42px;height:42px;padding:0;border-radius:12px;
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  display:grid;place-items:center;margin-top:-14px;
+  box-shadow:0 10px 22px rgba(15,23,42,.32);
+}
+.mobile-nav a.mobile-plus svg{width:22px;height:22px}
+
+@media (max-width:900px){
+  .nav-links{display:none}
+}
+@media (max-width:640px){
+  body{padding-bottom:100px}
+  main{padding:20px 14px 30px}
+  header.nav-wrap{padding:10px 12px}
+  .nav{padding:8px 10px 8px 12px;border-radius:14px}
+  .brand-text strong{font-size:.72rem;letter-spacing:1.8px}
+  .brand-text small{font-size:.52rem;letter-spacing:2px}
+  .brand-logo{width:34px;height:34px}
+  .composer-card{border-radius:20px}
+  .composer-header{padding:16px 18px 14px;gap:12px}
+  .composer-avatar{width:44px;height:44px}
+  .composer-body{padding:6px 18px 14px}
+  .composer-textarea{font-size:1rem;min-height:120px}
+  .composer-toolbar{padding:12px 18px;flex-direction:column;align-items:stretch;gap:10px}
+  .toolbar-right{justify-content:space-between}
+  .tips{grid-template-columns:1fr}
+  .mobile-nav{display:block}
+}
+@media (min-width:641px){ .mobile-nav{display:none} }
+</style>
+</head>
+<body>
+
+<header class="nav-wrap">
+  <nav class="nav">
+    <div class="brand">
+      <img src="assets/images/logo.png" alt="The Eternal Dread" class="brand-logo" />
+      <div class="brand-text">
+        <strong>The Eternal Dread</strong>
+        <small>Friends • Memories • Forever</small>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        Home
+      </a>
+      <a href="friends.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Friends
+      </a>
+      <a href="posts.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Posts
+      </a>
+      <a href="chat.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </a>
+      <a href="events.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Events
+      </a>
+      <a href="profile.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+    </div>
+    <div class="nav-actions">
+      <a href="settings.html" class="icon-btn" title="Settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </a>
+      <a href="profile.html" class="avatar-btn" aria-label="Profile">
+        <img id="navAvatar" src="" alt="Me" style="display:none" />
+        <span id="navAvatarInitial" style="display:grid;place-items:center;width:100%;height:100%;font-weight:700;color:var(--muted);font-size:.8rem"></span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- PAGE HEAD -->
+  <div class="page-head">
+    <div class="eyebrow">Create Post</div>
+    <h1>Share a moment</h1>
+    <p>Write a thought, add a photo, and let the circle see.</p>
+  </div>
+
+  <!-- COMPOSER -->
+  <div class="composer-card">
+    <div class="composer-header">
+      <div class="composer-avatar" id="composerAvatar">
+        <span id="composerInitial">?</span>
+      </div>
+      <div class="composer-user">
+        <strong id="composerName">Loading…</strong>
+        <span>Posting publicly to the circle</span>
+      </div>
+      <div class="draft-pill" id="draftPill" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Draft saved
+      </div>
+    </div>
+
+    <div class="composer-body">
+      <textarea id="postText" class="composer-textarea" placeholder="What's on your mind?"></textarea>
+      <div id="imagePreviewWrap"></div>
+    </div>
+
+    <div class="composer-toolbar">
+      <div class="toolbar-left">
+        <button type="button" class="tool-btn" id="addImageBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Add Photo
+        </button>
+        <input type="file" id="imageInput" accept="image/*" hidden />
+      </div>
+      <div class="toolbar-right">
+        <span class="char-counter" id="charCounter">0 / 2000</span>
+        <button type="button" class="btn btn-primary" id="publishBtn" disabled>
+          <span id="publishText">Publish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tips">
+    <div class="tip-card">
+      <div class="tip-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <h4>Keep it honest</h4>
+      <p>Real words matter more than polished ones.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <h4>One image</h4>
+      <p>Photos auto-compress. Use one great shot.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+      </div>
+      <h4>Draft-safe</h4>
+      <p>Your draft is saved locally as you type.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="page-footer">
+  <div>© The Eternal Dread • Friends • Memories • Forever</div>
+  <div><span class="powered">Powered by: THx@T-SEEK@REX</span></div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <ul>
+    <li><a href="dashboard.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+      Home</a></li>
+    <li><a href="friends.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Friends</a></li>
+    <li><a href="create-post.html" class="mobile-plus active" aria-label="Create post">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </a></li>
+    <li><a href="chat.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat</a></li>
+    <li><a href="profile.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile</a></li>
+  </ul>
+</nav>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script type="module">
+  import { requireAuth } from './js/auth.js';
+  import { getUserDoc, createPost } from './js/app.js';
+  import { showToast, initCommonUI } from './js/main.js';
+
+  initCommonUI();
+
+  let currentUser = null;
+  let me = null;
+  let imageBase64 = '';
+  const MAX_LENGTH = 2000;
+  const DRAFT_KEY = 'ted_create_post_draft';
+
+  const postText = document.getElementById('postText');
+  const imageInput = document.getElementById('imageInput');
+  const addImageBtn = document.getElementById('addImageBtn');
+  const imagePreviewWrap = document.getElementById('imagePreviewWrap');
+  const publishBtn = document.getElementById('publishBtn');
+  const publishText = document.getElementById('publishText');
+  const charCounter = document.getElementById('charCounter');
+  const draftPill = document.getElementById('draftPill');
+  const composerAvatar = document.getElementById('composerAvatar');
+  const composerName = document.getElementById('composerName');
+
+  // ---------- Auth ----------
+  requireAuth(async (user) => {
+    currentUser = user;
+    try {
+      me = await getUserDoc(user.uid);
+      renderUser();
+      restoreDraft();
+      updatePublishState();
+    } catch (e){
+      console.error(e);
+      showToast('Could not load profile.', 'error');
+    }
+  });
+
+  function renderUser(){
+    const name = (me && me.name) || 'Member';
+    const photo = (me && me.profileImageBase64) || '';
+    // Composer avatar
+    if (photo){
+      composerAvatar.innerHTML = `<img src="${photo}" alt="">`;
+    } else {
+      composerAvatar.innerHTML = `<span>${esc(name.charAt(0).toUpperCase())}</span>`;
+    }
+    composerName.textContent = name;
+    // Nav avatar
+    const navImg = document.getElementById('navAvatar');
+    const navInitial = document.getElementById('navAvatarInitial');
+    if (photo){
+      navImg.src = photo; navImg.style.display = 'block';
+      navInitial.style.display = 'none';
+    } else {
+      navInitial.textContent = name.charAt(0).toUpperCase();
+      navInitial.style.display = 'grid';
+      navImg.style.display = 'none';
+    }
+  }
+
+  function esc(s){
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  // ---------- Counter ----------
+  function updateCounter(){
+    const len = postText.value.length;
+    charCounter.textContent = `${len} / ${MAX_LENGTH}`;
+    charCounter.classList.remove('warn','over');
+    if (len > MAX_LENGTH) charCounter.classList.add('over');
+    else if (len > MAX_LENGTH * 0.85) charCounter.classList.add('warn');
+  }
+
+  // ---------- Publish state ----------
+  function updatePublishState(){
+    const hasContent = (postText.value.trim().length > 0 || imageBase64);
+    const notTooLong = postText.value.length <= MAX_LENGTH;
+    publishBtn.disabled = !hasContent || !notTooLong;
+  }
+
+  // ---------- Draft Save ----------
+  let draftTimer = null;
+  function saveDraft(){
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(()=>{
+      try {
+        const data = {
+          text: postText.value,
+          image: imageBase64 || '',
+          savedAt: Date.now()
+        };
+        if (data.text || data.image){
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+          draftPill.style.display = 'inline-flex';
+          setTimeout(()=>{ draftPill.style.display = 'none'; }, 2000);
+        } else {
+          localStorage.removeItem(DRAFT_KEY);
+          draftPill.style.display = 'none';
+        }
+      } catch (e){ /* quota errors ignored */ }
+    }, 500);
+  }
+
+  function restoreDraft(){
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.text) postText.value = data.text;
+      if (data.image){
+        imageBase64 = data.image;
+        renderImagePreview(data.image);
+      }
+      updateCounter();
+      updatePublishState();
+      if (data.text || data.image){
+        showToast('Draft restored.', 'info');
+      }
+    } catch (e){ console.warn(e); }
+  }
+
+  // ---------- Image preview ----------
+  function renderImagePreview(dataUrl){
+    imagePreviewWrap.innerHTML = `
+      <div class="image-preview-wrap">
+        <img src="${dataUrl}" alt="Preview" />
+        <button type="button" class="image-preview-remove" id="removeImageBtn" aria-label="Remove image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>`;
+    document.getElementById('removeImageBtn').addEventListener('click', ()=>{
+      imageBase64 = '';
+      imagePreviewWrap.innerHTML = '';
+      updatePublishState();
+      saveDraft();
+    });
+  }
+
+  // ---------- Compress ----------
+  function compressImage(file, maxW, maxH, quality){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          const ratio = Math.min(maxW/width, maxH/height, 1);
+          width = Math.round(width*ratio);
+          height = Math.round(height*ratio);
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0,0,width,height);
+          ctx.drawImage(img, 0, 0, width, height);
+          try { resolve(canvas.toDataURL('image/jpeg', quality)); }
+          catch(err){ reject(err); }
+        };
+        img.onerror = reject;
+        img.src = reader.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ---------- Inputs ----------
+  postText.addEventListener('input', ()=>{
+    updateCounter();
+    updatePublishState();
+    saveDraft();
+  });
+
+  addImageBtn.addEventListener('click', ()=> imageInput.click());
+
+  imageInput.addEventListener('change', async (e)=>{
+    const file = e.target.files && e.target.files[0];
+    imageInput.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')){ showToast('Please select an image.', 'error'); return; }
+    if (file.size > 10*1024*1024){ showToast('Image is too large (max 10 MB).', 'error'); return; }
+
+    showToast('Processing image…', 'info');
+    try {
+      const dataUrl = await compressImage(file, 900, 900, 0.82);
+      imageBase64 = dataUrl;
+      renderImagePreview(dataUrl);
+      updatePublishState();
+      saveDraft();
+      showToast('Image ready.', 'success');
+    } catch (err){
+      console.error(err);
+      showToast('Could not process image.', 'error');
+    }
+  });
+
+  // ---------- Publish ----------
+  publishBtn.addEventListener('click', async ()=>{
+    const text = postText.value.trim();
+    if (!text && !imageBase64){
+      showToast('Write something or add a photo.', 'error');
+      return;
+    }
+    if (postText.value.length > MAX_LENGTH){
+      showToast(`Post is too long (max ${MAX_LENGTH} characters).`, 'error');
+      return;
+    }
+
+    publishBtn.disabled = true;
+    publishText.innerHTML = '<span class="spinner"></span> Publishing…';
+
+    try {
+      await createPost({
+        userId: currentUser.uid,
+        text,
+        imageBase64: imageBase64 || ''
+      });
+
+      // Clear draft
+      try { localStorage.removeItem(DRAFT_KEY); } catch(e){}
+      postText.value = '';
+      imageBase64 = '';
+      imagePreviewWrap.innerHTML = '';
+      updateCounter();
+      updatePublishState();
+
+      showToast('Published! Redirecting…', 'success');
+      setTimeout(()=> location.href = 'posts.html', 700);
+    } catch (err){
+      console.error(err);
+      const msg = (err && err.message) || 'Could not publish post.';
+      showToast(msg, 'error');
+      publishBtn.disabled = false;
+      publishText.textContent = 'Publish';
+    }
+  });
+
+  // ---------- Beforeunload ----------
+  window.addEventListener('beforeunload', (e)=>{
+    const hasContent = postText.value.trim().length > 0 || imageBase64;
+    if (hasContent){
+      // Browser will show generic "Leave site?" prompt
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    }
+  });
+
+  // ---------- Keyboard shortcut: Cmd/Ctrl + Enter to publish ----------
+  postText.addEventListener('keydown', (e)=>{
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
+      e.preventDefault();
+      if (!publishBtn.disabled) publishBtn.click();
+    }
+  });
+</script>
+</body>
+</html>

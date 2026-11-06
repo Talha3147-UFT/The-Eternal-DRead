@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ffffff" />
+<title>Dashboard — The Eternal Dread</title>
+<link rel="icon" href="assets/images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ffffff; --bg-soft:#f8fafc; --text:#0b1220; --muted:#64748b; --muted-2:#94a3b8;
+  --border:#e5e9f0; --border-strong:#d7dde7; --accent:#0b1220;
+  --success:#16a34a; --danger:#dc2626;
+  --shadow-1:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --shadow-2:0 10px 30px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.04);
+  --shadow-3:0 20px 50px rgba(16,24,40,.12);
+  --shadow-glow:0 0 0 1px rgba(17,24,39,.04),0 20px 60px rgba(17,24,39,.10);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-serif:'Playfair Display',Georgia,serif;
+  --radius:14px; --radius-lg:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);color:var(--text);line-height:1.6;
+  background:
+    radial-gradient(900px 700px at 12% -10%, rgba(15,23,42,.05), transparent 60%),
+    radial-gradient(700px 600px at 100% 100%, rgba(30,41,59,.04), transparent 60%),
+    var(--bg);
+  min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:80px;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button,input{font-family:inherit}
+
+header.nav-wrap{position:sticky;top:0;z-index:50;padding:14px 22px}
+.nav{
+  max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 10px 16px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(226,232,240,.9);border-radius:16px;
+  box-shadow:var(--shadow-2), inset 0 1px 0 rgba(255,255,255,.6);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{
+  width:38px;height:38px;border-radius:12px;object-fit:cover;
+  border:1px solid var(--border);
+  box-shadow:0 8px 20px rgba(17,24,39,.12),0 0 0 4px rgba(17,24,39,.03);
+}
+.brand-text strong{display:block;font-size:.82rem;letter-spacing:2.2px;text-transform:uppercase;font-weight:800;}
+.brand-text small{display:block;font-size:.58rem;letter-spacing:2.6px;text-transform:uppercase;color:var(--muted);margin-top:2px;font-weight:600;}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;
+  font-size:.85rem;font-weight:500;color:var(--muted);transition:all .22s var(--ease);
+}
+.nav-links a svg{width:16px;height:16px;opacity:.85}
+.nav-links a:hover{color:var(--text);background:rgba(15,23,42,.04)}
+.nav-links a.active{color:var(--text);background:rgba(15,23,42,.06);font-weight:600}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+  background:rgba(255,255,255,.6);border:1px solid var(--border);
+  color:var(--text);cursor:pointer;position:relative;transition:all .22s var(--ease);
+}
+.icon-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-2)}
+.icon-btn .badge{
+  position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;
+  border-radius:9px;background:#dc2626;color:#fff;
+  font-size:.66rem;font-weight:700;display:grid;place-items:center;
+  box-shadow:0 0 0 2px #fff,0 4px 12px rgba(220,38,38,.4);
+  animation:pulseBadge 2s ease-in-out infinite;
+}
+@keyframes pulseBadge{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.avatar-btn{
+  width:38px;height:38px;border-radius:50%;padding:0;overflow:hidden;
+  border:2px solid #fff;cursor:pointer;
+  box-shadow:0 0 0 2px rgba(15,23,42,.08),0 6px 16px rgba(15,23,42,.15);
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  transition:transform .25s var(--ease);
+}
+.avatar-btn:hover{transform:scale(1.04)}
+.avatar-btn img{width:100%;height:100%;object-fit:cover}
+
+main{
+  max-width:1280px;margin:0 auto;padding:28px 22px 40px;
+  display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;
+}
+.welcome{
+  position:relative;padding:34px 32px;border-radius:var(--radius-lg);
+  background:
+    radial-gradient(600px 240px at 100% 0%, rgba(255,255,255,.06), transparent 60%),
+    linear-gradient(180deg,#0f172a,#0b1220);
+  color:#fff;overflow:hidden;box-shadow:var(--shadow-3), 0 0 0 1px rgba(15,23,42,.10);
+  margin-bottom:24px;
+}
+.welcome::before{
+  content:"";position:absolute;top:-60px;right:-60px;width:260px;height:260px;
+  border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.10),transparent 65%);
+}
+.welcome .eyebrow{
+  display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.85);margin-bottom:14px;backdrop-filter:blur(8px);
+}
+.welcome .eyebrow .dot{
+  width:6px;height:6px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 0 4px rgba(34,197,94,.25);animation:pulse 2s infinite;
+}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(34,197,94,.08)}}
+.welcome h1{font-family:var(--font-serif);font-size:clamp(1.7rem,3vw,2.4rem);font-weight:700;letter-spacing:-.5px;margin-bottom:8px;}
+.welcome p{color:rgba(255,255,255,.72);font-size:.98rem;max-width:520px}
+.welcome-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;position:relative}
+.welcome .btn{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 20px;
+  border-radius:12px;font-weight:600;font-size:.88rem;cursor:pointer;
+  border:1px solid transparent;transition:all .25s var(--ease);
+}
+.welcome .btn-light{background:#fff;color:#0b1220;box-shadow:0 10px 24px rgba(0,0,0,.28);}
+.welcome .btn-light:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,0,0,.34)}
+.welcome .btn-ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff;}
+.welcome .btn-ghost:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{
+  padding:20px 18px;border-radius:var(--radius);
+  background:linear-gradient(180deg,#fff,#fbfcfe);border:1px solid var(--border);
+  box-shadow:var(--shadow-2);
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  animation:statIn .6s var(--ease) backwards;
+}
+.stat-card:nth-child(1){animation-delay:.05s}
+.stat-card:nth-child(2){animation-delay:.1s}
+.stat-card:nth-child(3){animation-delay:.15s}
+.stat-card:nth-child(4){animation-delay:.2s}
+@keyframes statIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-3),0 0 0 1px rgba(15,23,42,.04)}
+.stat-icon{
+  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+  background:rgba(15,23,42,.06);color:#0b1220;margin-bottom:12px;
+}
+.stat-icon svg{width:18px;height:18px}
+.stat-value{font-family:var(--font-serif);font-size:1.9rem;font-weight:700;letter-spacing:-1px;color:#0b1220;line-height:1;}
+.stat-label{font-size:.76rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+
+.panel{
+  border-radius:var(--radius-lg);background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);box-shadow:var(--shadow-2);margin-bottom:20px;overflow:hidden;
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--border);
+}
+.panel-head h2{font-family:var(--font-serif);font-size:1.05rem;font-weight:700;letter-spacing:-.3px;color:#0b1220;}
+.panel-head .more{font-size:.82rem;color:var(--muted);font-weight:500;transition:color .2s;}
+.panel-head .more:hover{color:#0b1220}
+.panel-body{padding:20px 22px}
+
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.quick{
+  padding:18px 14px;border-radius:14px;background:#fff;border:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  text-align:center;cursor:pointer;transition:all .28s var(--ease);
+}
+.quick:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);border-color:var(--border-strong);}
+.quick .q-icon{
+  width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  box-shadow:0 8px 18px rgba(15,23,42,.24);
+}
+.quick .q-icon svg{width:20px;height:20px}
+.quick .q-label{font-size:.82rem;font-weight:600;color:#0b1220}
+
+.post{padding:20px 22px;border-bottom:1px solid var(--border);transition:background .2s;}
+.post:last-child{border-bottom:none}
+.post:hover{background:rgba(15,23,42,.015)}
+.post-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.post-avatar{
+  width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);border:2px solid #fff;
+  box-shadow:0 4px 12px rgba(15,23,42,.10),0 0 0 2px rgba(15,23,42,.04);
+  display:grid;place-items:center;color:var(--muted);font-weight:700;
+}
+.post-avatar img{width:100%;height:100%;object-fit:cover}
+.post-meta{flex:1;min-width:0}
+.post-meta h4{font-size:.92rem;font-weight:600;color:#0b1220;line-height:1.2}
+.post-meta .time{font-size:.76rem;color:var(--muted-2);margin-top:2px}
+.post-text{font-size:.94rem;line-height:1.7;color:#1f2937;white-space:pre-wrap;word-wrap:break-word;}
+.post-media{margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-1);}
+.post-media img{width:100%;max-height:420px;object-fit:cover}
+.post-actions{display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);}
+
+.sidebar{display:flex;flex-direction:column;gap:20px}
+.side-card{
+  border-radius:var(--radius-lg);background:linear-gradient(180deg,#fff,#fbfcfe);
+  border:1px solid var(--border);box-shadow:var(--shadow-2);overflow:hidden;
+}
+.side-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+}
+.side-head h3{font-family:var(--font-serif);font-size:.94rem;font-weight:700;letter-spacing:-.2px;color:#0b1220;}
+.side-head .more{font-size:.76rem;color:var(--muted);font-weight:500;}
+.side-head .more:hover{color:#0b1220}
+.side-body{padding:12px 14px 14px}
+
+.profile-summary{text-align:center;padding:22px 18px}
+.profile-summary .avatar{
+  width:82px;height:82px;border-radius:50%;margin:0 auto 12px;overflow:hidden;
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);border:3px solid #fff;
+  display:grid;place-items:center;color:var(--muted);font-weight:700;font-size:1.6rem;
+  box-shadow:0 12px 28px rgba(15,23,42,.16),0 0 0 4px rgba(15,23,42,.04);position:relative;
+}
+.profile-summary .avatar img{width:100%;height:100%;object-fit:cover}
+.profile-summary .avatar .online{
+  position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;
+  background:#22c55e;border:2px solid #fff;box-shadow:0 0 0 3px rgba(34,197,94,.2);
+  animation:pulseGreen 2s infinite;
+}
+@keyframes pulseGreen{50%{box-shadow:0 0 0 6px rgba(34,197,94,.1)}}
+.profile-summary h4{font-size:.96rem;font-weight:600;margin-bottom:2px}
+.profile-summary .nick{font-size:.78rem;color:var(--muted)}
+.profile-summary .bio{
+  font-size:.82rem;color:var(--muted);margin-top:12px;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.profile-summary .view-btn{
+  display:inline-block;margin-top:14px;padding:8px 18px;border-radius:10px;
+  background:#0b1220;color:#fff;font-size:.8rem;font-weight:600;
+  box-shadow:0 8px 18px rgba(15,23,42,.22);transition:all .25s var(--ease);
+}
+.profile-summary .view-btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(15,23,42,.28)}
+
+.friend-item{
+  display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:10px;
+  transition:background .2s;cursor:pointer;
+}
+.friend-item:hover{background:rgba(15,23,42,.04)}
+.friend-item .f-avatar{
+  width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);border:2px solid #fff;position:relative;
+  box-shadow:0 4px 10px rgba(15,23,42,.10);display:grid;place-items:center;
+  font-weight:700;font-size:.78rem;color:var(--muted);
+}
+.friend-item .f-avatar img{width:100%;height:100%;object-fit:cover}
+.friend-item .f-avatar .dot{
+  position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;
+  background:#cbd5e1;border:2px solid #fff;
+}
+.friend-item .f-avatar .dot.online{
+  background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.25);animation:pulseGreen 2s infinite;
+}
+.friend-item .f-meta{flex:1;min-width:0}
+.friend-item .f-meta strong{
+  display:block;font-size:.84rem;font-weight:600;color:#0b1220;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.friend-item .f-meta small{
+  font-size:.72rem;color:var(--muted-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;
+}
+
+.event-item{padding:12px 6px;border-radius:10px;display:flex;gap:12px;transition:background .2s;cursor:pointer;}
+.event-item:hover{background:rgba(15,23,42,.04)}
+.event-date{
+  width:46px;flex-shrink:0;text-align:center;padding:8px 4px;border-radius:10px;
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  box-shadow:0 6px 14px rgba(15,23,42,.22);
+}
+.event-date .day{font-family:var(--font-serif);font-size:1.2rem;font-weight:700;line-height:1;}
+.event-date .mon{font-size:.62rem;text-transform:uppercase;letter-spacing:1px;opacity:.8;margin-top:2px;}
+.event-info{flex:1;min-width:0}
+.event-info h5{
+  font-size:.86rem;font-weight:600;color:#0b1220;margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.event-info small{font-size:.74rem;color:var(--muted-2);display:block}
+
+.empty{text-align:center;padding:28px 20px;color:var(--muted);font-size:.86rem;line-height:1.6;}
+.empty svg{width:36px;height:36px;color:var(--muted-2);margin:0 auto 10px;opacity:.6;}
+
+footer.page-footer{
+  max-width:1280px;margin:20px auto 0;padding:24px 22px 10px;
+  text-align:center;color:var(--muted);font-size:.78rem;line-height:1.7;
+  border-top:1px solid var(--border);
+}
+footer.page-footer .powered{
+  display:inline-block;font-weight:700;letter-spacing:1.4px;color:#0b1220;margin-top:4px;
+  transition:all .3s var(--ease);
+}
+footer.page-footer .powered:hover{text-shadow:0 0 14px rgba(15,23,42,.35)}
+
+.mobile-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:60;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--border);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  box-shadow:0 -10px 30px rgba(15,23,42,.06);
+}
+.mobile-nav ul{list-style:none;display:flex;justify-content:space-around;align-items:flex-end;}
+.mobile-nav a{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 10px;border-radius:10px;color:var(--muted);
+  font-size:.66rem;font-weight:600;letter-spacing:.4px;transition:all .22s var(--ease);
+}
+.mobile-nav a svg{width:20px;height:20px}
+.mobile-nav a.active{color:#0b1220}
+.mobile-nav a.active svg{stroke-width:2.5}
+.mobile-nav a.mobile-plus{
+  width:42px;height:42px;padding:0;border-radius:12px;
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  display:grid;place-items:center;margin-top:-14px;
+  box-shadow:0 10px 22px rgba(15,23,42,.32);
+}
+.mobile-nav a.mobile-plus svg{width:22px;height:22px}
+
+@media (max-width:1080px){
+  main{grid-template-columns:1fr}
+  .sidebar{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+}
+@media (max-width:900px){
+  .nav-links{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .quick-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  body{padding-bottom:100px}
+  main{padding:18px 14px 30px}
+  header.nav-wrap{padding:10px 12px}
+  .nav{padding:8px 10px 8px 12px;border-radius:14px}
+  .brand-text strong{font-size:.72rem;letter-spacing:1.8px}
+  .brand-text small{font-size:.52rem;letter-spacing:2px}
+  .brand-logo{width:34px;height:34px}
+  .welcome{padding:24px 20px;border-radius:16px}
+  .welcome h1{font-size:1.5rem}
+  .sidebar{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat-card{padding:16px 14px}
+  .stat-value{font-size:1.6rem}
+  .post{padding:16px 16px}
+  .panel-head{padding:14px 16px}
+  .panel-body{padding:16px}
+  .mobile-nav{display:block}
+}
+@media (min-width:641px){ .mobile-nav{display:none} }
+</style>
+</head>
+<body>
+
+<header class="nav-wrap">
+  <nav class="nav">
+    <div class="brand">
+      <img src="assets/images/logo.png" alt="The Eternal Dread" class="brand-logo" />
+      <div class="brand-text">
+        <strong>The Eternal Dread</strong>
+        <small>Friends • Memories • Forever</small>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        Home
+      </a>
+      <a href="friends.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        Friends
+      </a>
+      <a href="posts.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Posts
+      </a>
+      <a href="chat.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </a>
+      <a href="events.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Events
+      </a>
+      <a href="profile.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+    </div>
+    <div class="nav-actions">
+      <a href="settings.html" class="icon-btn" title="Notifications" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="badge" id="notifBadge" style="display:none">0</span>
+      </a>
+      <a href="profile.html" class="avatar-btn" aria-label="Profile">
+        <img id="navAvatar" src="" alt="Me" style="display:none" />
+        <span id="navAvatarInitial" style="display:grid;place-items:center;width:100%;height:100%;font-weight:700;color:var(--muted);font-size:.8rem"></span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div>
+    <section class="welcome">
+      <div class="eyebrow"><span class="dot"></span> Welcome back</div>
+      <h1 id="welcomeTitle">Hello, friend.</h1>
+      <p id="welcomeSub">Here's what's been happening in our circle.</p>
+      <div class="welcome-actions">
+        <a href="create-post.html" class="btn btn-light">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Create Post
+        </a>
+        <a href="chat.html" class="btn btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Open Chat
+        </a>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        </div>
+        <div class="stat-value" id="statFriends">—</div>
+        <div class="stat-label">Friends</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        </div>
+        <div class="stat-value" id="statPosts">—</div>
+        <div class="stat-label">Posts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="stat-value" id="statMessages">—</div>
+        <div class="stat-label">Messages</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <div class="stat-value" id="statEvents">—</div>
+        <div class="stat-label">Events</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Quick actions</h2>
+      </div>
+      <div class="panel-body">
+        <div class="quick-grid">
+          <a href="create-post.html" class="quick">
+            <div class="q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>
+            <div class="q-label">New Post</div>
+          </a>
+          <a href="friends.html" class="quick">
+            <div class="q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+            <div class="q-label">Find Friends</div>
+          </a>
+          <a href="chat.html" class="quick">
+            <div class="q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="q-label">Open Chat</div>
+          </a>
+          <a href="events.html" class="quick">
+            <div class="q-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+            <div class="q-label">View Events</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Recent posts</h2>
+        <a href="posts.html" class="more">View all →</a>
+      </div>
+      <div id="feedContainer">
+        <div class="post"><div class="post-head"><div class="post-avatar skeleton" style="border:none"></div><div class="post-meta"><div class="skeleton" style="height:12px;width:120px;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:70px"></div></div></div><div class="skeleton" style="height:14px;width:90%;margin-bottom:8px"></div></div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="sidebar">
+    <div class="side-card">
+      <div class="profile-summary">
+        <div class="avatar" id="profileAvatarWrap">
+          <img id="profileAvatarImg" src="" alt="" style="display:none" />
+          <span id="profileAvatarInitial">?</span>
+          <span class="online"></span>
+        </div>
+        <h4 id="profileName">Loading…</h4>
+        <div class="nick" id="profileNick">@loading</div>
+        <p class="bio" id="profileBio">Fetching your profile details…</p>
+        <a href="profile.html" class="view-btn">View Profile</a>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-head">
+        <h3>Friends</h3>
+        <a href="friends.html" class="more">See all</a>
+      </div>
+      <div class="side-body" id="friendsList">
+        <div class="skeleton" style="height:40px;margin-bottom:8px"></div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-head">
+        <h3>Upcoming events</h3>
+        <a href="events.html" class="more">See all</a>
+      </div>
+      <div class="side-body" id="eventsList">
+        <div class="skeleton" style="height:56px;margin-bottom:8px"></div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-head">
+        <h3>Notifications</h3>
+      </div>
+      <div class="side-body" id="notifList">
+        <div class="skeleton" style="height:40px;margin-bottom:8px"></div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="page-footer">
+  <div>© The Eternal Dread • Friends • Memories • Forever</div>
+  <div><span class="powered">Powered by: THx@T-SEEK@REX</span></div>
+</footer>
+
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <ul>
+    <li><a href="dashboard.html" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+      Home</a></li>
+    <li><a href="friends.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Friends</a></li>
+    <li><a href="create-post.html" class="mobile-plus" aria-label="Create post">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </a></li>
+    <li><a href="chat.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat</a></li>
+    <li><a href="profile.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile</a></li>
+  </ul>
+</nav>
+
+<script type="module">
+  import { requireAuth } from './js/auth.js';
+  import {
+    getUserDoc, getRecentPosts, getAllMembers, getUpcomingEvents,
+    getNotifications, getUserMessagesCount, listenToUserDoc
+  } from './js/app.js';
+  import { showToast, initCommonUI, formatTime } from './js/main.js';
+
+  initCommonUI();
+  let currentUser = null;
+
+  requireAuth(async (user) => {
+    currentUser = user;
+    try {
+      const doc = await getUserDoc(user.uid);
+      renderProfileSummary(user, doc);
+      updateWelcome(doc);
+      loadStats(user.uid);
+      loadFeed();
+      loadFriends();
+      loadEvents();
+      loadNotifications(user.uid);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  function esc(str){
+    if (str == null) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function renderProfileSummary(user, doc){
+    const name = (doc && doc.name) || user.displayName || 'Member';
+    const nickname = (doc && doc.nickname) || name.split(' ')[0];
+    const bio = (doc && doc.bio) || 'No bio yet.';
+    const photo = (doc && doc.profileImageBase64) || '';
+
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('profileNick').textContent = '@' + nickname;
+    document.getElementById('profileBio').textContent = bio;
+
+    const wrap = document.getElementById('profileAvatarWrap');
+    const img = document.getElementById('profileAvatarImg');
+    const initial = document.getElementById('profileAvatarInitial');
+    if (photo) {
+      img.src = photo; img.style.display = 'block';
+      if(initial) initial.style.display = 'none';
+    } else {
+      if(initial) {
+        initial.textContent = name.charAt(0).toUpperCase();
+        initial.style.display = 'grid';
+      }
+      img.style.display = 'none';
+    }
+
+    const navImg = document.getElementById('navAvatar');
+    const navInitial = document.getElementById('navAvatarInitial');
+    if (photo) {
+      navImg.src = photo; navImg.style.display = 'block';
+      if(navInitial) navInitial.style.display = 'none';
+    } else {
+      if(navInitial) {
+        navInitial.textContent = name.charAt(0).toUpperCase();
+        navInitial.style.display = 'grid';
+      }
+      navImg.style.display = 'none';
+    }
+  }
+
+  function updateWelcome(doc){
+    const name = (doc && (doc.nickname || doc.name)) || 'friend';
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('welcomeTitle').textContent = `${greeting}, ${name}.`;
+  }
+
+  async function loadStats(uid){
+    try {
+      const [postsCount, friends, events, msgCount] = await Promise.all([
+        getRecentPosts({ userId: uid, countOnly: true }).catch(()=>0),
+        getAllMembers({ excludeUid: uid }).catch(()=>[]), 
+        getUpcomingEvents().catch(()=>[]),
+        getUserMessagesCount(uid).catch(()=>0)
+      ]);
+      animateNumber('statPosts', postsCount || 0);
+      animateNumber('statFriends', (friends || []).length);
+      animateNumber('statEvents', (events || []).length);
+      animateNumber('statMessages', msgCount || 0);
+    } catch (e) { console.error(e); }
+  }
+
+  function animateNumber(id, target){
+    const el = document.getElementById(id);
+    if (!el) return;
+    const t0 = performance.now();
+    const dur = 700;
+    function tick(now){
+      const p = Math.min((now - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  async function loadFeed() {
+      const container = document.getElementById('feedContainer');
+      try {
+        const posts = await getRecentPosts({ limit: 5 });
+        const postList = posts.posts || posts; // <--- THIS IS THE FIX
+        
+        if (!postList || postList.length === 0) {
+          container.innerHTML = `<div class="empty">No posts yet.</div>`;
+          return;
+        }
+      container.innerHTML = postList.map(p => {
+        const author = p.author || {};
+        const photo = author.profileImageBase64 || '';
+        const name = author.name || 'Member';
+        return `
+          <article class="post">
+            <div class="post-head">
+              <div class="post-avatar">${photo ? `<img src="${photo}">` : esc(name.charAt(0))}</div>
+              <div class="post-meta">
+                <h4>${esc(name)}</h4>
+                <div class="time">${formatTime(p.createdAt)}</div>
+              </div>
+            </div>
+            ${p.text ? `<div class="post-text">${esc(p.text)}</div>` : ''}
+            ${p.imageBase64 ? `<div class="post-media"><img src="${p.imageBase64}"></div>` : ''}
+          </article>`;
+      }).join('');
+    } catch (e){
+      console.error(e);
+      container.innerHTML = `<div class="empty">Could not load posts.</div>`;
+    }
+  }
+
+  async function loadFriends(){
+    const list = document.getElementById('friendsList');
+    try {
+      const friends = await getAllMembers({ excludeUid: currentUser.uid });
+      if (!friends || friends.length === 0){
+        list.innerHTML = `<div class="empty" style="padding:14px 10px">No friends yet.</div>`;
+        return;
+      }
+      list.innerHTML = friends.slice(0, 5).map(f => `
+          <a class="friend-item" href="profile.html?uid=${esc(f.id)}">
+            <div class="f-avatar">${f.profileImageBase64 ? `<img src="${f.profileImageBase64}">` : esc(f.name.charAt(0))}<span class="dot ${f.status === 'online' ? 'online' : ''}"></span></div>
+            <div class="f-meta"><strong>${esc(f.name)}</strong><small>@${esc(f.nickname || 'member')}</small></div>
+          </a>`).join('');
+    } catch (e){
+      list.innerHTML = `<div class="empty" style="padding:14px 10px">Could not load friends.</div>`;
+    }
+  }
+
+  async function loadEvents(){
+    const list = document.getElementById('eventsList');
+    try {
+      const events = await getUpcomingEvents(4);
+      if (!events || events.length === 0){
+        list.innerHTML = `<div class="empty" style="padding:14px 10px">No upcoming events.</div>`;
+        return;
+      }
+      list.innerHTML = events.map(ev => {
+        const d = ev.date?.toDate ? ev.date.toDate() : new Date(ev.date);
+        return `
+          <div class="event-item">
+            <div class="event-date"><div class="day">${d.getDate()}</div><div class="mon">${d.toLocaleString(undefined, { month: 'short' })}</div></div>
+            <div class="event-info"><h5>${esc(ev.title)}</h5><small>${esc(ev.location || 'TBA')}</small></div>
+          </div>`;
+      }).join('');
+    } catch (e){
+      list.innerHTML = `<div class="empty" style="padding:14px 10px">Could not load events.</div>`;
+    }
+  }
+
+  async function loadNotifications(uid){
+    const list = document.getElementById('notifList');
+    try {
+      const notifs = await getNotifications(uid, { limit: 4 });
+      if (!notifs || notifs.length === 0){
+        list.innerHTML = `<div class="empty" style="padding:14px 10px">You're all caught up.</div>`;
+        return;
+      }
+      list.innerHTML = notifs.map(n => `
+        <div class="friend-item">
+          <div class="f-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="14" height="14"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>
+          <div class="f-meta"><strong>${esc(n.title)}</strong><small>${esc(n.message)}</small></div>
+        </div>
+      `).join('');
+    } catch (e){
+      list.innerHTML = `<div class="empty" style="padding:14px 10px">Could not load notifications.</div>`;
+    }
+  }
+</script>
+</body>
+</html>

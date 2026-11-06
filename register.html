@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ffffff" />
+<title>Register — The Eternal Dread</title>
+<link rel="icon" href="assets/images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#ffffff;
+  --text:#0b1220;
+  --muted:#64748b;
+  --muted-2:#94a3b8;
+  --border:#e5e9f0;
+  --border-strong:#d7dde7;
+  --accent:#0b1220;
+  --shadow-1:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --shadow-2:0 10px 30px rgba(16,24,40,.08),0 4px 10px rgba(16,24,40,.04);
+  --shadow-3:0 20px 50px rgba(16,24,40,.12);
+  --shadow-glow:0 0 0 1px rgba(17,24,39,.04),0 20px 60px rgba(17,24,39,.10);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-serif:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font-sans);color:var(--text);line-height:1.6;
+  background:
+    radial-gradient(900px 700px at 12% -10%, rgba(15,23,42,.06), transparent 60%),
+    radial-gradient(700px 600px at 100% 100%, rgba(30,41,59,.05), transparent 60%),
+    var(--bg);
+  min-height:100vh;
+  padding:32px 20px 40px;
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;align-items:center;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button,input{font-family:inherit}
+
+.card{
+  width:100%;max-width:560px;
+  padding:38px 34px 30px;
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.82));
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.9);
+  outline:1px solid var(--border);
+  border-radius:26px;
+  box-shadow:var(--shadow-3), var(--shadow-glow),
+    inset 0 1px 0 rgba(255,255,255,.85);
+  animation:enter .55s var(--ease);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;top:-140px;right:-100px;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(15,23,42,.10),transparent 65%);
+  pointer-events:none;
+}
+@keyframes enter{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:26px;position:relative}
+.brand-logo{
+  width:46px;height:46px;border-radius:14px;object-fit:cover;
+  border:1px solid var(--border);
+  box-shadow:0 10px 24px rgba(17,24,39,.14),0 0 0 4px rgba(17,24,39,.03);
+}
+.brand-text strong{
+  display:block;font-size:.86rem;letter-spacing:2.4px;text-transform:uppercase;font-weight:800;
+}
+.brand-text small{
+  display:block;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);margin-top:3px;font-weight:600;
+}
+
+h2{
+  font-family:var(--font-serif);font-size:1.9rem;font-weight:700;
+  letter-spacing:-.6px;margin-bottom:6px;color:#0b1220;
+}
+.sub{color:var(--muted);font-size:.92rem;margin-bottom:26px}
+
+/* Avatar uploader */
+.avatar-wrap{
+  display:flex;align-items:center;gap:18px;margin-bottom:24px;
+  padding:16px;border-radius:16px;
+  background:rgba(255,255,255,.6);
+  border:1px dashed var(--border-strong);
+  transition:all .3s var(--ease);
+}
+.avatar-wrap:hover{border-color:#0b1220;background:rgba(255,255,255,.9)}
+.avatar-preview{
+  width:76px;height:76px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:linear-gradient(180deg,#f1f5f9,#e2e8f0);
+  border:2px solid #fff;
+  box-shadow:0 10px 24px rgba(17,24,39,.14),0 0 0 4px rgba(17,24,39,.04);
+  display:grid;place-items:center;
+  color:var(--muted);
+  font-weight:700;font-size:1.3rem;
+}
+.avatar-preview img{width:100%;height:100%;object-fit:cover}
+.avatar-meta{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.avatar-meta h4{font-size:.9rem;font-weight:600;color:#0b1220}
+.avatar-meta p{font-size:.78rem;color:var(--muted)}
+.avatar-btn{
+  align-self:flex-start;
+  padding:8px 14px;border-radius:10px;
+  background:#0b1220;color:#fff;font-size:.8rem;font-weight:600;
+  cursor:pointer;border:none;letter-spacing:.2px;
+  box-shadow:0 8px 18px rgba(15,23,42,.20);
+  transition:all .25s var(--ease);
+}
+.avatar-btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(15,23,42,.28)}
+
+/* Fields */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:16px}
+label{
+  display:block;font-size:.76rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);margin-bottom:8px;
+}
+label .req{color:#dc2626}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"]{
+  width:100%;padding:13px 15px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-size:.95rem;color:var(--text);
+  transition:border .2s var(--ease), box-shadow .25s var(--ease), background .2s;
+  box-shadow:var(--shadow-1), inset 0 1px 0 rgba(255,255,255,.8);
+}
+input::placeholder{color:#a7b0c0}
+input:focus{
+  outline:none;border-color:#0b1220;
+  box-shadow:0 0 0 4px rgba(15,23,42,.06), 0 6px 20px rgba(15,23,42,.08);
+}
+input.invalid{border-color:#dc2626;box-shadow:0 0 0 4px rgba(220,38,38,.08)}
+.hint{font-size:.74rem;color:var(--muted-2);margin-top:6px}
+
+/* Strength meter */
+.strength{
+  margin-top:8px;height:5px;border-radius:4px;overflow:hidden;
+  background:#f1f5f9;
+}
+.strength > span{
+  display:block;height:100%;width:0%;
+  background:linear-gradient(90deg,#dc2626,#f59e0b,#16a34a);
+  transition:width .4s var(--ease);
+  border-radius:4px;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:14px 20px;border-radius:12px;
+  font-weight:600;font-size:.95rem;letter-spacing:.2px;
+  cursor:pointer;border:1px solid transparent;
+  transition:transform .25s var(--ease), box-shadow .3s var(--ease), background .2s;
+}
+.btn-primary{
+  background:linear-gradient(180deg,#0f172a,#0b1220);color:#fff;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.16) inset,
+    0 12px 26px rgba(15,23,42,.30),
+    0 3px 8px rgba(15,23,42,.20);
+}
+.btn-primary:hover{
+  transform:translateY(-1px);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 18px 34px rgba(15,23,42,.36);
+}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.msg{
+  margin-top:14px;padding:11px 14px;border-radius:10px;
+  font-size:.85rem;display:none;border:1px solid transparent;
+}
+.msg.error{background:#fef2f2;color:#b91c1c;border-color:#fecaca;display:block}
+.msg.success{background:#f0fdf4;color:#166534;border-color:#bbf7d0;display:block}
+
+.spinner{
+  width:16px;height:16px;border:2px solid #fff;
+  border-top-color:transparent;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.link-row{
+  margin-top:18px;text-align:center;font-size:.86rem;color:var(--muted);
+}
+.link-row a{color:#0b1220;font-weight:600;transition:opacity .2s}
+.link-row a:hover{opacity:.7}
+
+.sep{border:none;border-top:1px solid var(--border);margin:24px 0 18px}
+.foot{text-align:center;color:var(--muted);font-size:.76rem;line-height:1.7}
+.foot .powered{
+  display:inline-block;font-weight:700;letter-spacing:1.4px;color:#0b1220;margin-top:4px;
+  transition:all .3s var(--ease);
+}
+.foot .powered:hover{text-shadow:0 0 14px rgba(15,23,42,.35)}
+
+@media (max-width:520px){
+  body{padding:16px 12px 32px}
+  .card{padding:28px 22px 24px;border-radius:22px}
+  h2{font-size:1.6rem}
+  .grid-2{grid-template-columns:1fr}
+  .avatar-wrap{flex-direction:column;align-items:flex-start;text-align:left}
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <img src="assets/images/logo.png" alt="Logo" class="brand-logo" />
+    <div class="brand-text">
+      <strong>The Eternal Dread</strong>
+      <small>Friends • Memories • Forever</small>
+    </div>
+  </div>
+
+  <h2>Create your account</h2>
+  <p class="sub">Join the circle. It takes less than a minute.</p>
+
+  <form id="registerForm" novalidate>
+    <!-- Avatar -->
+    <div class="avatar-wrap">
+      <div class="avatar-preview" id="avatarPreview">
+        <span id="avatarInitial">?</span>
+      </div>
+      <div class="avatar-meta">
+        <h4>Profile photo</h4>
+        <p>JPG, PNG or WEBP. Auto-compressed to Base64.</p>
+        <button type="button" class="avatar-btn" id="pickPhotoBtn">Choose photo</button>
+        <input type="file" id="photoInput" accept="image/*" hidden />
+      </div>
+    </div>
+
+    <!-- Name / Nickname -->
+    <div class="grid-2">
+      <div class="field">
+        <label for="name">Full Name <span class="req">*</span></label>
+        <input id="name" name="name" type="text" autocomplete="name" required placeholder="John Doe" />
+      </div>
+      <div class="field">
+        <label for="nickname">Nickname <span class="req">*</span></label>
+        <input id="nickname" name="nickname" type="text" required placeholder="Johnny" />
+      </div>
+    </div>
+
+    <!-- Email / Phone -->
+    <div class="grid-2">
+      <div class="field">
+        <label for="email">Email <span class="req">*</span></label>
+        <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" />
+      </div>
+    </div>
+
+    <!-- Password / Confirm -->
+    <div class="grid-2">
+      <div class="field">
+        <label for="password">Password <span class="req">*</span></label>
+        <input id="password" name="password" type="password" autocomplete="new-password" required placeholder="••••••••" />
+        <div class="strength"><span id="strengthBar"></span></div>
+        <div class="hint">Use 8+ characters with letters, numbers & symbols.</div>
+      </div>
+      <div class="field">
+        <label for="confirmPassword">Confirm Password <span class="req">*</span></label>
+        <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required placeholder="••••••••" />
+      </div>
+    </div>
+
+    <button id="submitBtn" class="btn btn-primary" type="submit" style="margin-top:10px">
+      <span id="btnText">Create Account</span>
+    </button>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="link-row">
+      Already a member? <a href="login.html">Sign in</a>
+    </div>
+  </form>
+
+  <hr class="sep" />
+  <div class="foot">
+    © The Eternal Dread
+    <div><span class="powered">Powered by: THx@T-SEEK@REX</span></div>
+  </div>
+</div>
+
+<script type="module">
+  import { register, getAuthState } from './js/auth.js';
+
+  const form = document.getElementById('registerForm');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const avatarPreview = document.getElementById('avatarPreview');
+  const avatarInitial = document.getElementById('avatarInitial');
+  const pickPhotoBtn = document.getElementById('pickPhotoBtn');
+  const photoInput = document.getElementById('photoInput');
+  const strengthBar = document.getElementById('strengthBar');
+  const nameInput = document.getElementById('name');
+  const passwordInput = document.getElementById('password');
+
+  // Base64 image data (compressed)
+  let photoBase64 = '';
+
+  // Redirect if already authenticated
+  getAuthState(u => { if (u) location.href = 'dashboard.html'; });
+
+  function setMsg(text, type='error'){
+    msg.textContent = text;
+    msg.className = 'msg ' + type;
+  }
+  function setLoading(v){
+    btn.disabled = v;
+    btnText.innerHTML = v ? '<span class="spinner"></span> Creating…' : 'Create Account';
+  }
+
+  // Initial from name field
+  nameInput.addEventListener('input', ()=>{
+    if (!photoBase64) {
+      const initial = nameInput.value.trim().charAt(0).toUpperCase() || '?';
+      avatarInitial.textContent = initial;
+    }
+  });
+
+  // ---------- Password strength ----------
+  passwordInput.addEventListener('input', ()=>{
+    const v = passwordInput.value;
+    let score = 0;
+    if (v.length >= 6) score++;
+    if (v.length >= 10) score++;
+    if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+    if (/\d/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+    const pct = Math.min(score / 5 * 100, 100);
+    strengthBar.style.width = pct + '%';
+  });
+
+  // ---------- Image upload + compression ----------
+  pickPhotoBtn.addEventListener('click', ()=> photoInput.click());
+
+  photoInput.addEventListener('change', async (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      setMsg('Please choose an image file.');
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setMsg('Image is too large. Max 8 MB.');
+      return;
+    }
+
+    try {
+      const dataUrl = await compressImage(file, 320, 320, 0.82);
+      photoBase64 = dataUrl;
+      avatarPreview.innerHTML = `<img src="${dataUrl}" alt="Preview" />`;
+      setMsg('Photo loaded. It will be saved with your profile.', 'success');
+    } catch (err) {
+      console.error(err);
+      setMsg('Could not process the image. Try a different one.');
+    }
+  });
+
+  // Resize + compress image to Base64
+  function compressImage(file, maxW, maxH, quality){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          const ratio = Math.min(maxW / width, maxH / height, 1);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          try {
+            const out = canvas.toDataURL('image/jpeg', quality);
+            resolve(out);
+          } catch (err) { reject(err); }
+        };
+        img.onerror = reject;
+        img.src = reader.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ---------- Form submission ----------
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    msg.className = 'msg';
+    msg.textContent = '';
+
+    const name = form.name.value.trim();
+    const nickname = form.nickname.value.trim();
+    const email = form.email.value.trim();
+    const phone = form.phone.value.trim();
+    const password = form.password.value;
+    const confirmPassword = form.confirmPassword.value;
+
+    // Validation
+    if (!name || name.length < 2)  return setMsg('Please enter your full name.');
+    if (!nickname)                 return setMsg('Please enter a nickname.');
+    if (!email)                    return setMsg('Please enter your email.');
+    if (!password)                 return setMsg('Please choose a password.');
+    if (password.length < 6)       return setMsg('Password must be at least 6 characters.');
+    if (password !== confirmPassword) return setMsg('Passwords do not match.');
+
+    setLoading(true);
+    try {
+      await register({
+        name,
+        nickname,
+        email,
+        phone,
+        password,
+        photoBase64
+      });
+      setMsg('Account created! Redirecting…', 'success');
+      setTimeout(()=> location.href = 'dashboard.html', 800);
+    } catch (err) {
+      setLoading(false);
+      const code = (err.code || '').toString();
+      if (code.includes('email-already-in-use'))       setMsg('This email is already registered. Try logging in.');
+      else if (code.includes('invalid-email'))         setMsg('Please enter a valid email address.');
+      else if (code.includes('weak-password'))         setMsg('Password is too weak. Use at least 6 characters.');
+      else if (code.includes('operation-not-allowed')) setMsg('Email/password sign-up is disabled. Contact the admin.');
+      else setMsg(err.message || 'Registration failed. Please try again.');
+    }
+  });
+</script>
+</body>
+</html>
